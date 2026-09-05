@@ -1,0 +1,92 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/test_world.gd" id="1_world"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2_player"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_instruction"]
+bg_color = Color(0.055, 0.11, 0.105, 0.9)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+content_margin_left = 20.0
+content_margin_top = 12.0
+content_margin_right = 20.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.075, 0.145, 0.14, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.88, 0.76, 0.46, 0.55)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="TestWorld" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(640, 420)
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="SafeMargin" type="MarginContainer" parent="Interface"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Layout" type="VBoxContainer" parent="Interface/SafeMargin"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="TopBar" type="HBoxContainer" parent="Interface/SafeMargin/Layout"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_constants/separation = 14
+
+[node name="BackButton" type="Button" parent="Interface/SafeMargin/Layout/TopBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+text = "‹ Title"
+
+[node name="InstructionPanel" type="PanelContainer" parent="Interface/SafeMargin/Layout/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_instruction")
+
+[node name="Instruction" type="Label" parent="Interface/SafeMargin/Layout/TopBar/InstructionPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.93, 0.84, 1)
+theme_override_font_sizes/font_size = 18
+text = "Tap or click the road to walk · Arrow keys also work on desktop"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="Interface/SafeMargin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="PrototypeLabel" type="Label" parent="Interface/SafeMargin/Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.16, 0.2, 0.17, 0.78)
+theme_override_font_sizes/font_size = 15
+text = "MOVEMENT PROTOTYPE · STORY CONTENT ARRIVES IN MILESTONE 2"
+horizontal_alignment = 1

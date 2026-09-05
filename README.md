@@ -6,13 +6,31 @@ The project will use Godot 4.7.2 and GDScript, with one offline-first codebase t
 
 ## Project status
 
-Planning and development-environment setup. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+Milestone 1 development. The project currently includes a responsive title screen and a small 2D isometric movement environment. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 
 No production Sanctuary services, credentials, accounts, analytics, advertising, or purchases are connected.
 
 ## Development
 
 Contributor conventions, planned commands, religious-content safeguards, testing expectations, and the definition of done are in [AGENTS.md](AGENTS.md).
+
+Install Godot 4.7.2 stable and its matching export templates, then open the repository folder in Godot or run it directly:
+
+```sh
+godot --editor --path .
+godot --path .
+```
+
+On the title screen, choose **Begin the Journey**. Click or tap the road to move the placeholder traveler; desktop arrow keys are also supported.
+
+Run the automated checks with:
+
+```sh
+godot --headless --path . --quit
+godot --headless --path . -s res://tests/run_tests.gd
+```
+
+Behavior and responsive-layout checks are listed in [docs/MANUAL_TEST_CHECKLIST.md](docs/MANUAL_TEST_CHECKLIST.md).
 
 ## Content status
 

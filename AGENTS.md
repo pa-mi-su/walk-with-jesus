@@ -8,9 +8,9 @@ This repository targets Godot 4.7.2 stable with GDScript and a single project ex
 
 ## Current phase
 
-Planning only. Do not begin substantial implementation until the user approves `docs/IMPLEMENTATION_PLAN.md`.
+Milestone 1 is complete. Do not begin Milestone 2 religious content or settle its story schema until the user accepts the movement/visual foundation and approves the proposed content framing.
 
-The local folder must be initialized as a Git repository and connected to the user-approved GitHub repository before Milestone 1 implementation begins. Do not create a remote repository, choose its owner or visibility, overwrite an existing remote, or publish commits without confirming those choices with the user.
+The canonical local checkout is `/Users/pms/repos/walk-with-jesus` and its `origin` is the public `pa-mi-su/walk-with-jesus` GitHub repository. Do not change repository ownership or visibility, overwrite the remote, or publish credentials or generated output.
 
 ## Source control
 

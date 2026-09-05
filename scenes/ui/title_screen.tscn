@@ -1,0 +1,119 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="1_title"]
+[ext_resource type="Script" path="res://scripts/ui/title_illustration.gd" id="2_illustration"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.075, 0.145, 0.14, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.79, 0.67, 0.39, 0.42)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+content_margin_left = 42.0
+content_margin_top = 32.0
+content_margin_right = 42.0
+content_margin_bottom = 32.0
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_title")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.055, 0.11, 0.105, 1)
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Columns" type="HBoxContainer" parent="SafeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 42
+
+[node name="Illustration" type="Control" parent="SafeMargin/Columns"]
+custom_minimum_size = Vector2(420, 300)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("2_illustration")
+
+[node name="PanelCenter" type="CenterContainer" parent="SafeMargin/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Panel" type="PanelContainer" parent="SafeMargin/Columns/PanelCenter"]
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Columns/PanelCenter/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Eyebrow" type="Label" parent="SafeMargin/Columns/PanelCenter/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.76, 0.46, 1)
+theme_override_font_sizes/font_size = 18
+text = "A SANCTUARY EXPERIENCE"
+horizontal_alignment = 1
+[node name="Title" type="Label" parent="SafeMargin/Columns/PanelCenter/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.95, 0.86, 1)
+theme_override_font_sizes/font_size = 48
+text = "Walk With Jesus"
+horizontal_alignment = 1
+
+[node name="Rule" type="HSeparator" parent="SafeMargin/Columns/PanelCenter/Panel/Content"]
+layout_mode = 2
+
+[node name="Subtitle" type="Label" parent="SafeMargin/Columns/PanelCenter/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.81, 0.84, 0.77, 1)
+theme_override_font_sizes/font_size = 21
+text = "Listen. Understand. Choose with mercy."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="SafeMargin/Columns/PanelCenter/Panel/Content"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="SafeMargin/Columns/PanelCenter/Panel/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Begin the Journey"
+
+[node name="Status" type="Label" parent="SafeMargin/Columns/PanelCenter/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.64, 0.7, 0.65, 1)
+theme_override_font_sizes/font_size = 15
+text = "Good Samaritan · Prototype"
+horizontal_alignment = 1

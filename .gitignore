@@ -3,7 +3,8 @@
 *.translation
 
 # Build and export output
-build/
+build/*
+!build/.gdignore
 dist/
 exports/
 *.apk

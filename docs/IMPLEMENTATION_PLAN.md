@@ -1,6 +1,6 @@
 # Walk With Jesus — Initial Implementation Plan
 
-Status: awaiting approval. This document intentionally contains no game implementation.
+Status: approved on September 5, 2026. Milestones 0 and 1 are complete; Milestone 2 awaits the next approval checkpoint.
 
 ## Architecture decision
 
@@ -12,7 +12,7 @@ The story will be a data-driven state machine: content data identifies the curre
 
 ## Milestones
 
-### 0. Repository and tool setup
+### 0. Repository and tool setup — complete
 
 - Confirm the GitHub owner, repository name, and visibility.
 - Initialize this folder as a Git repository with `main` as its default branch, or connect it safely if the user chooses an existing repository.
@@ -23,7 +23,7 @@ The story will be a data-driven state machine: content data identifies the curre
 
 Approval checkpoint: verify the GitHub destination and confirm that only planning/setup files—not credentials or generated files—were published.
 
-### 1. Playable foundation
+### 1. Playable foundation — complete
 
 - Create the Godot 4.7.2 project and desktop-first run configuration.
 - Add a responsive landscape title screen with “A Sanctuary Experience.”
