@@ -28,6 +28,9 @@ func _capture() -> void:
 	main.get_node("CharacterSelection").select_character_by_index(2)
 	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
+	_save_viewport("journey-intro-1280x720.png")
+	main.get_node("TestWorld").start_journey()
+	await _wait_for_render()
 	_save_viewport("movement-1280x720.png")
 	var desktop_world := main.get_node("TestWorld")
 	desktop_world._set_walk_target(desktop_world.player.position + Vector2(-360.0, -300.0))
@@ -35,6 +38,11 @@ func _capture() -> void:
 		await physics_frame
 	await _wait_for_render()
 	_save_viewport("journey-progress-1280x720.png")
+	await _advance_to_story_stop(desktop_world)
+	_save_viewport("story-stop-1280x720.png")
+	desktop_world.choose_story_response(0)
+	await _wait_for_render()
+	_save_viewport("story-response-1280x720.png")
 
 	main.get_node("TestWorld").return_to_title_requested.emit()
 	root.size = Vector2i(844, 390)
@@ -46,6 +54,9 @@ func _capture() -> void:
 	main.get_node("CharacterSelection").select_character_by_index(1)
 	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
+	_save_viewport("journey-intro-844x390.png")
+	main.get_node("TestWorld").start_journey()
+	await _wait_for_render()
 	_save_viewport("movement-844x390.png")
 	var phone_world := main.get_node("TestWorld")
 	phone_world._set_walk_target(phone_world.player.position + Vector2(-300.0, -250.0))
@@ -53,6 +64,8 @@ func _capture() -> void:
 		await physics_frame
 	await _wait_for_render()
 	_save_viewport("journey-progress-844x390.png")
+	await _advance_to_story_stop(phone_world)
+	_save_viewport("story-stop-844x390.png")
 	main.get_node("TestWorld").return_to_title_requested.emit()
 
 	root.size = Vector2i(1024, 768)
@@ -65,6 +78,17 @@ func _wait_for_render() -> void:
 	await process_frame
 	await process_frame
 	await RenderingServer.frame_post_draw
+
+
+func _advance_to_story_stop(world: Node) -> void:
+	for _frame in range(240):
+		if world.get_journey_phase() == "catch_up":
+			break
+		await physics_frame
+	world.player.stop()
+	world.player.position = world.jesus_guide.position + Vector2(45.0, 35.0)
+	await physics_frame
+	await _wait_for_render()
 
 
 func _save_viewport(file_name: String) -> void:

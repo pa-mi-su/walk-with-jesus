@@ -2,6 +2,9 @@ extends Node2D
 
 signal return_to_title_requested
 
+const JOURNEY_CONTENT_PATH := "res://content/journeys/good_samaritan.json"
+const INTERACTION_DISTANCE := 135.0
+
 @onready var road_background: Sprite2D = $RoadBackground
 @onready var journey_camera: Camera2D = %JourneyCamera
 @onready var world_content: Node2D = $WorldContent
@@ -14,8 +17,12 @@ signal return_to_title_requested
 @onready var instruction_label: Label = %InstructionLabel
 @onready var journey_hint: Label = %JourneyHint
 @onready var destination_marker: Node2D = $WorldContent/DestinationMarker
+@onready var story_overlay: StoryOverlay = $StoryOverlay
 
 var _session_active := false
+var _journey_phase := "inactive"
+var _journey_data: Dictionary = {}
+var _current_stop: Dictionary = {}
 
 
 func _process(delta: float) -> void:
@@ -23,6 +30,12 @@ func _process(delta: float) -> void:
 		return
 	var lead_position := player.position.lerp(jesus_guide.position, 0.28)
 	journey_camera.position = journey_camera.position.lerp(lead_position, 1.0 - exp(-delta * 5.0))
+	if _journey_phase == "leading":
+		_update_follow_distance("Jesus is leading")
+	elif _journey_phase == "catch_up":
+		_update_follow_distance("Jesus has stopped ahead")
+		if player.global_position.distance_to(jesus_guide.global_position) <= INTERACTION_DISTANCE:
+			_open_current_story_stop()
 
 
 func _ready() -> void:
@@ -30,7 +43,10 @@ func _ready() -> void:
 	journey_camera.enabled = false
 	back_button.pressed.connect(func() -> void: return_to_title_requested.emit())
 	player.destination_reached.connect(_on_destination_reached)
-	jesus_guide.route_completed.connect(_on_guide_route_completed)
+	jesus_guide.stop_reached.connect(_on_guide_stop_reached)
+	story_overlay.primary_pressed.connect(_on_story_primary_pressed)
+	story_overlay.choice_selected.connect(_on_story_choice_selected)
+	_load_journey_content()
 	interface.visible = false
 	destination_marker.visible = false
 	get_viewport().size_changed.connect(_update_responsive_interface)
@@ -48,8 +64,12 @@ func begin_session() -> void:
 	jesus_guide.reset_with_follower(player)
 	journey_camera.position = player.position.lerp(jesus_guide.position, 0.28)
 	journey_camera.reset_smoothing()
-	journey_hint.text = "Follow Jesus along the road"
+	journey_hint.text = "Your journey is about to begin"
+	instruction_label.text = "Listen for your next step"
+	jesus_guide.set_guidance_cue("")
 	destination_marker.visible = false
+	_journey_phase = "intro"
+	story_overlay.show_intro(_journey_data.get("intro", {}))
 	queue_redraw()
 
 
@@ -67,11 +87,13 @@ func end_session() -> void:
 	interface.visible = false
 	player.stop()
 	jesus_guide.stop_guiding()
+	story_overlay.close()
+	_journey_phase = "inactive"
 	destination_marker.visible = false
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _session_active or not visible:
+	if not _session_active or not visible or _journey_phase not in ["leading", "catch_up"]:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_set_walk_target(_screen_to_world(event.position))
@@ -98,8 +120,114 @@ func _on_destination_reached() -> void:
 	destination_marker.visible = false
 
 
-func _on_guide_route_completed() -> void:
-	journey_hint.text = "Stay near Jesus and listen"
+func start_journey() -> void:
+	if _journey_phase != "intro":
+		return
+	story_overlay.close()
+	_lead_to_next_stop()
+
+
+func get_journey_phase() -> String:
+	return _journey_phase
+
+
+func get_story_stop_count() -> int:
+	return (_journey_data.get("stops", []) as Array).size()
+
+
+func choose_story_response(index: int) -> void:
+	_on_story_choice_selected(index)
+
+
+func continue_story() -> void:
+	_on_story_primary_pressed()
+
+
+func _on_story_primary_pressed() -> void:
+	if _journey_phase == "intro":
+		start_journey()
+	elif _journey_phase == "story_response":
+		story_overlay.close()
+		_lead_to_next_stop()
+	elif _journey_phase == "reflection":
+		story_overlay.close()
+		_journey_phase = "complete"
+		jesus_guide.set_guidance_cue("")
+		instruction_label.text = "Journey 1 complete"
+		journey_hint.text = "Carry mercy into the choices you make"
+
+
+func _on_story_choice_selected(index: int) -> void:
+	if _journey_phase != "story":
+		return
+	var choices: Array = _current_stop.get("choices", [])
+	if index < 0 or index >= choices.size():
+		return
+	var choice: Dictionary = choices[index]
+	_journey_phase = "story_response"
+	story_overlay.show_choice_response(
+		str(choice.get("response", "")),
+		str(_current_stop.get("action_label", "Continue with Jesus  →"))
+	)
+
+
+func _lead_to_next_stop() -> void:
+	if not jesus_guide.lead_to_next_stop():
+		return
+	_journey_phase = "leading"
+	jesus_guide.set_guidance_cue("FOLLOW\n↓")
+	instruction_label.text = "Jesus is leading — follow Him"
+	journey_hint.text = "FOLLOW JESUS"
+
+
+func _on_guide_stop_reached(route_index: int) -> void:
+	_current_stop = _find_stop(route_index)
+	if _current_stop.is_empty():
+		push_error("Journey content has no stop for route index %d" % route_index)
+		return
+	_journey_phase = "catch_up"
+	jesus_guide.set_guidance_cue("CATCH UP\n↓")
+	instruction_label.text = "Catch up to Jesus"
+	_update_follow_distance("Jesus has stopped ahead")
+
+
+func _open_current_story_stop() -> void:
+	player.stop()
+	jesus_guide.set_guidance_cue("")
+	destination_marker.visible = false
+	if bool(_current_stop.get("completion", false)):
+		_journey_phase = "reflection"
+		instruction_label.text = "Journey reflection"
+		journey_hint.text = "Listen and reflect"
+		story_overlay.show_completion(_current_stop)
+	else:
+		_journey_phase = "story"
+		instruction_label.text = "Choose your response"
+		journey_hint.text = "A moment to listen and act"
+		story_overlay.show_story_stop(_current_stop)
+
+
+func _update_follow_distance(prefix: String) -> void:
+	var distance := player.global_position.distance_to(jesus_guide.global_position)
+	var approximate_steps := maxi(1, roundi(distance / 7.0))
+	journey_hint.text = "%s  ·  about %d steps" % [prefix, approximate_steps]
+
+
+func _find_stop(route_index: int) -> Dictionary:
+	for stop: Variant in _journey_data.get("stops", []):
+		if stop is Dictionary and int(stop.get("route_index", -1)) == route_index:
+			return (stop as Dictionary).duplicate(true)
+	return {}
+
+
+func _load_journey_content() -> void:
+	var raw_text := FileAccess.get_file_as_string(JOURNEY_CONTENT_PATH)
+	var parsed: Variant = JSON.parse_string(raw_text)
+	if not parsed is Dictionary or not parsed.has("intro") or not parsed.has("stops"):
+		push_error("Invalid journey content: %s" % JOURNEY_CONTENT_PATH)
+		_journey_data = {"intro": {}, "stops": []}
+		return
+	_journey_data = (parsed as Dictionary).duplicate(true)
 
 
 func _build_navigation_area() -> void:

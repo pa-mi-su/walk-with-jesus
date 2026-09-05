@@ -2,6 +2,7 @@ class_name JesusGuide
 extends Node2D
 
 signal route_completed
+signal stop_reached(route_index: int)
 
 @export var route_points := PackedVector2Array([
 	Vector2(1310.0, 1030.0),
@@ -15,6 +16,7 @@ signal route_completed
 @export var walking_speed := 92.0
 
 @onready var sprite: Sprite2D = $Sprite2D
+@onready var guide_cue: Label = $GuideCue
 
 var _follower: Node2D
 var _route_index := 0
@@ -29,10 +31,6 @@ func _process(delta: float) -> void:
 	_update_walk_animation(delta, _moving)
 	if _moving:
 		_update_visual_scale()
-	if _follower == null or _moving or _completed:
-		return
-	if global_position.distance_to(_follower.global_position) <= follower_trigger_distance:
-		_advance_to_next_stop()
 
 
 func reset_with_follower(follower: Node2D) -> void:
@@ -44,6 +42,7 @@ func reset_with_follower(follower: Node2D) -> void:
 	_completed = false
 	position = route_points[0]
 	visible = true
+	guide_cue.visible = false
 	_update_visual_scale()
 
 
@@ -52,6 +51,7 @@ func stop_guiding() -> void:
 		_movement_tween.kill()
 	_moving = false
 	_follower = null
+	guide_cue.visible = false
 
 
 func get_route_index() -> int:
@@ -62,11 +62,18 @@ func get_walk_amount() -> float:
 	return _walk_amount
 
 
-func _advance_to_next_stop() -> void:
+func set_guidance_cue(text: String) -> void:
+	guide_cue.text = text
+	guide_cue.visible = not text.is_empty()
+
+
+func lead_to_next_stop() -> bool:
+	if _moving or _completed:
+		return false
 	if _route_index >= route_points.size() - 1:
 		_completed = true
 		route_completed.emit()
-		return
+		return false
 	_route_index += 1
 	var next_stop := route_points[_route_index]
 	var distance := position.distance_to(next_stop)
@@ -78,11 +85,13 @@ func _advance_to_next_stop() -> void:
 	_movement_tween.set_ease(Tween.EASE_IN_OUT)
 	_movement_tween.tween_property(self, "position", next_stop, distance / walking_speed)
 	_movement_tween.tween_callback(_finish_movement)
+	return true
 
 
 func _finish_movement() -> void:
 	_moving = false
 	_update_visual_scale()
+	stop_reached.emit(_route_index)
 
 
 func _update_visual_scale() -> void:

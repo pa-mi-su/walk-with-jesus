@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "id": "good_samaritan",
+  "content_status": "provisional",
+  "title": "Jesus Teaches the Good Samaritan",
+  "scripture_reference": "Luke 10:25–37",
+  "intro": {
+    "kicker": "JOURNEY 1 · LUKE 10",
+    "title": "Walk with Jesus",
+    "body": "Jesus is traveling with His followers. Stay near Him as He leads you toward a teaching about love of neighbor and mercy.",
+    "action_label": "Follow Jesus  →"
+  },
+  "stops": [
+    {
+      "route_index": 1,
+      "kicker": "STORY STOP · A QUESTION",
+      "title": "A question on the road",
+      "body": "A scholar asks Jesus what it means to love your neighbor. Jesus turns the question into an invitation to listen and reflect.",
+      "prompt": "How will you enter this teaching?",
+      "reference": "Provisional summary inspired by Luke 10:25–29",
+      "choices": [
+        {
+          "label": "Listen closely",
+          "response": "You quiet your thoughts and give the teaching your full attention."
+        },
+        {
+          "label": "Ask what love requires",
+          "response": "You begin listening for a form of love that becomes practical action."
+        }
+      ],
+      "action_label": "Continue with Jesus  →"
+    },
+    {
+      "route_index": 2,
+      "kicker": "STORY STOP · THE ROAD",
+      "title": "Someone is suffering",
+      "body": "In the story Jesus tells, a traveler has been attacked and left wounded beside the road. The need is real, but stopping may feel costly or unsafe.",
+      "prompt": "What do you notice first?",
+      "reference": "Provisional summary inspired by Luke 10:30",
+      "choices": [
+        {
+          "label": "His immediate need",
+          "response": "Compassion begins by seeing a person rather than an interruption."
+        },
+        {
+          "label": "The danger around him",
+          "response": "You recognize the risk and consider how to help wisely without turning away."
+        }
+      ],
+      "action_label": "Follow Jesus onward  →"
+    },
+    {
+      "route_index": 3,
+      "kicker": "STORY STOP · DRAW NEAR",
+      "title": "Mercy crosses the road",
+      "body": "Others see the wounded traveler and pass by. A Samaritan sees him, draws near, and responds with compassion.",
+      "prompt": "What would move you from concern to action?",
+      "reference": "Provisional summary inspired by Luke 10:31–33",
+      "choices": [
+        {
+          "label": "Approach and help",
+          "response": "You choose presence first—drawing near enough to understand what is needed."
+        },
+        {
+          "label": "Bring others to help",
+          "response": "You choose not to walk away; you look for safe, practical help and remain involved."
+        }
+      ],
+      "action_label": "Continue the journey  →"
+    },
+    {
+      "route_index": 4,
+      "kicker": "STORY STOP · MERCY IN ACTION",
+      "title": "Care has a cost",
+      "body": "The Samaritan gives time, supplies, transportation, and continued care. Mercy becomes more than a feeling—it becomes a commitment.",
+      "prompt": "What can you offer when someone needs care?",
+      "reference": "Provisional summary inspired by Luke 10:34–35",
+      "choices": [
+        {
+          "label": "Share what I have",
+          "response": "You recognize that ordinary resources can become instruments of mercy."
+        },
+        {
+          "label": "Stay and make a plan",
+          "response": "You choose patient responsibility rather than a hurried gesture."
+        }
+      ],
+      "action_label": "Walk to the final stop  →"
+    },
+    {
+      "route_index": 5,
+      "kicker": "JOURNEY REFLECTION",
+      "title": "Go and live mercifully",
+      "body": "Jesus' teaching makes neighbor-love concrete: notice suffering, draw near, and let compassion become action. Carry that invitation into the choices you make beyond this road.",
+      "reference": "Provisional summary inspired by Luke 10:36–37",
+      "completion": true,
+      "action_label": "Complete Journey 1"
+    }
+  ]
+}

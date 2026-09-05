@@ -12,6 +12,7 @@ func _run() -> void:
 	_check_project_configuration()
 	await _check_main_flow()
 	await _check_player_movement()
+	await _check_complete_journey()
 
 	if _failures == 0:
 		print("PASS: all checks passed")
@@ -84,16 +85,37 @@ func _check_main_flow() -> void:
 	_expect_true(journey_camera.enabled, "world camera activates only after the journey begins")
 	var player := world.get_node("WorldContent/Player") as TravelerPlayer
 	var guide := world.get_node("WorldContent/JesusGuide") as JesusGuide
+	var story_overlay := world.get_node("StoryOverlay") as StoryOverlay
 	_expect_true(guide != null, "Jesus is present as a separate guide")
 	_expect_true(guide != player, "Jesus is never the player-controlled character")
 	_expect_equal(player.sprite.texture.resource_path, "res://assets/generated/traveler-mara.png", "the selected traveler appears in the world")
+	_expect_equal(world.get_journey_phase(), "intro", "the journey begins with clear guidance")
+	_expect_equal(world.get_story_stop_count(), 5, "Journey 1 provides five purposeful story stops")
+	_expect_true(story_overlay.visible, "the player is explicitly invited to follow Jesus")
 
-	var initial_guide_position := guide.position
-	player.position = initial_guide_position + Vector2(60.0, 40.0)
+	guide.walking_speed = 1000.0
+	world.start_journey()
+	_expect_equal(world.get_journey_phase(), "leading", "accepting the invitation starts the guided journey")
+	_expect_equal(guide.get_route_index(), 1, "Jesus leads toward the first story stop")
+	_expect_true(guide.guide_cue.visible, "an on-road marker identifies Jesus as the guide to follow")
+	var guide_peak_walk_amount := 0.0
+	for _frame in range(40):
+		await process_frame
+		guide_peak_walk_amount = maxf(guide_peak_walk_amount, guide.get_walk_amount())
+		if world.get_journey_phase() == "catch_up":
+			break
+	_expect_true(guide_peak_walk_amount > 0.0, "Jesus uses a visible walking cycle while leading")
+	_expect_equal(world.get_journey_phase(), "catch_up", "reaching a route stop tells the player to catch up")
+
+	player.position = guide.position + Vector2(45.0, 35.0)
 	await process_frame
-	await process_frame
-	_expect_equal(guide.get_route_index(), 1, "Jesus leads onward when the player catches up")
-	_expect_true(guide.get_walk_amount() > 0.0, "Jesus uses a visible walking cycle while leading")
+	_expect_equal(world.get_journey_phase(), "story", "catching Jesus opens an interactive story stop")
+	_expect_true(story_overlay.visible, "story interaction appears instead of leaving the player with nothing")
+	world.choose_story_response(0)
+	_expect_equal(world.get_journey_phase(), "story_response", "a choice produces an immediate consequence")
+	world.continue_story()
+	_expect_equal(world.get_journey_phase(), "leading", "the story choice continues into the next guided leg")
+	_expect_equal(guide.get_route_index(), 2, "Jesus resumes leading after the interaction")
 
 	main.queue_free()
 	await process_frame
@@ -108,6 +130,7 @@ func _check_player_movement() -> void:
 	var world := world_scene.instantiate()
 	root.add_child(world)
 	world.begin_session()
+	world.start_journey()
 	await physics_frame
 	await physics_frame
 
@@ -124,6 +147,37 @@ func _check_player_movement() -> void:
 	_expect_true(camera.position.distance_to(starting_camera_position) > 80.0, "camera follows the journey down the road")
 	_expect_true(peak_walk_amount > 0.5, "the selected traveler uses a visible walking cycle")
 
+	world.queue_free()
+	await process_frame
+
+
+func _check_complete_journey() -> void:
+	var world_scene := load("res://scenes/world/test_world.tscn") as PackedScene
+	var world := world_scene.instantiate()
+	root.add_child(world)
+	world.begin_session()
+	world.jesus_guide.walking_speed = 1800.0
+	world.start_journey()
+
+	for route_index in range(1, 6):
+		for _frame in range(90):
+			if world.get_journey_phase() == "catch_up":
+				break
+			await process_frame
+		_expect_equal(world.jesus_guide.get_route_index(), route_index, "Jesus reaches guided stop %d" % route_index)
+		world.player.stop()
+		world.player.position = world.jesus_guide.position + Vector2(40.0, 30.0)
+		await process_frame
+		if route_index < 5:
+			_expect_equal(world.get_journey_phase(), "story", "stop %d opens a choice" % route_index)
+			world.choose_story_response(route_index % 2)
+			_expect_equal(world.get_journey_phase(), "story_response", "stop %d responds to the choice" % route_index)
+			world.continue_story()
+		else:
+			_expect_equal(world.get_journey_phase(), "reflection", "the final stop opens the journey reflection")
+			world.continue_story()
+
+	_expect_equal(world.get_journey_phase(), "complete", "Journey 1 reaches a clear completion state")
 	world.queue_free()
 	await process_frame
 

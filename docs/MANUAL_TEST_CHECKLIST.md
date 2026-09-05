@@ -20,6 +20,9 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 
 ### Movement
 
+- [ ] Entering the world first explains the objective and presents a clear “Follow Jesus” action.
+- [ ] Activating “Follow Jesus” makes Jesus set out before the player.
+- [ ] The HUD continually indicates that Jesus is leading and gives an approximate distance while traveling.
 - [ ] Clicking several reachable places moves the traveler toward each selected destination.
 - [ ] Tapping several reachable places on a touch device or simulated touch input does the same.
 - [ ] A destination marker gives immediate feedback at the selected location.
@@ -31,6 +34,9 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] When the traveler catches up, Jesus leads onward to the next road position.
 - [ ] The traveler’s legs alternate and the body rises and falls while walking, then settles while idle.
 - [ ] Jesus’ legs alternate and the body rises and falls while He is leading, then settles while idle.
+- [ ] Catching up to Jesus at a stop automatically opens a story interaction.
+- [ ] Each of the first four stops offers two responses and displays an immediate consequence before continuing.
+- [ ] The final stop presents a Journey 1 reflection and completion action.
 - [ ] Clicking the Title button does not also move the traveler.
 
 ### Responsive landscape layout

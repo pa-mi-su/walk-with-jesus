@@ -1,6 +1,6 @@
 # Walk With Jesus — Initial Implementation Plan
 
-Status: approved on September 5, 2026. Milestones 0 and 1 are complete; Milestone 2 awaits the next approval checkpoint.
+Status: approved on September 5, 2026. Milestones 0 and 1 are complete; Milestone 2 is in progress with provisional guided-story interactions pending review.
 
 ## Architecture decision
 
@@ -40,7 +40,7 @@ Approval checkpoint: verify the GitHub destination and confirm that only plannin
 
 Approval checkpoint: confirm the 2D isometric movement feel and overall visual direction before story systems expand.
 
-### 2. Teaching and choices
+### 2. Teaching and choices — in progress
 
 - Add content schemas and validation for journey metadata, Gospel chronology/theme, scenes, beats, speakers, summaries, choices, consequences, and references.
 - Add reusable dialogue and choice presentation.
@@ -48,6 +48,8 @@ Approval checkpoint: confirm the 2D isometric movement feel and overall visual d
 - Make Jesus the route-leading NPC: the selected traveler follows Him to teaching and encounter locations while Jesus remains outside player control.
 - Add a story runner that emits presentation-neutral events.
 - Test parsing, invalid content, branching, and deterministic state transitions.
+
+Current prototype slice: Jesus visibly leads each route leg; the HUD gives follow/catch-up guidance; reaching Him opens four externally-authored reflection choices with immediate responses followed by a final Journey 1 reflection. This is an interaction scaffold, not approved final religious copy or the complete Good Samaritan encounter.
 
 Approval checkpoint: review the provisional religious content and choice framing.
 

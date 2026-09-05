@@ -33,3 +33,17 @@ theme_override_fonts/font = SubResource("SystemFont_label")
 theme_override_font_sizes/font_size = 15
 text = "JESUS"
 horizontal_alignment = 1
+
+[node name="GuideCue" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -174.0
+offset_right = 48.0
+offset_bottom = -134.0
+theme_override_colors/font_color = Color(0.96, 0.87, 0.43, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.08, 0.1, 0.96)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = SubResource("SystemFont_label")
+theme_override_font_sizes/font_size = 15
+text = "FOLLOW\n↓"
+horizontal_alignment = 1
+vertical_alignment = 1
