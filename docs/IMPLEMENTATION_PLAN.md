@@ -35,6 +35,8 @@ Approval checkpoint: verify the GitHub destination and confirm that only plannin
 - Verify representative 16:9, 19.5:9, and 4:3 landscape viewports.
 - Add a responsive startup character-selection step backed by external character data, and carry the selected fictional traveler into gameplay.
 - Present exactly one primary start action for the featured journey; decorative labels must not resemble additional buttons.
+- Use a bounded scrolling world with a camera that follows the journey, rather than limiting movement to the opening viewport.
+- Give the selected traveler and Jesus readable walking cycles with alternating leg movement and grounded footfall motion.
 
 Approval checkpoint: confirm the 2D isometric movement feel and overall visual direction before story systems expand.
 

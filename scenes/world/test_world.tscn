@@ -57,19 +57,30 @@ content_margin_bottom = 11.0
 script = ExtResource("1_world")
 
 [node name="RoadBackground" type="Sprite2D" parent="."]
-position = Vector2(640, 360)
-scale = Vector2(0.766, 0.766)
+position = Vector2(1128.5, 635.2)
+scale = Vector2(1.35, 1.35)
 texture = ExtResource("3_background")
+
+[node name="JourneyCamera" type="Camera2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(1450, 1145)
+position_smoothing_enabled = true
+position_smoothing_speed = 4.5
+limit_left = 0
+limit_top = 0
+limit_right = 2257
+limit_bottom = 1270
 
 [node name="WorldContent" type="Node2D" parent="."]
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="WorldContent"]
 
 [node name="Player" parent="WorldContent" instance=ExtResource("2_player")]
-position = Vector2(825, 650)
+position = Vector2(1450, 1145)
+movement_bounds = Rect2(90, 70, 1510, 1125)
 
 [node name="JesusGuide" parent="WorldContent" instance=ExtResource("5_guide")]
-position = Vector2(610, 465)
+position = Vector2(1310, 1030)
 
 [node name="DestinationMarker" type="Node2D" parent="WorldContent"]
 z_index = 5

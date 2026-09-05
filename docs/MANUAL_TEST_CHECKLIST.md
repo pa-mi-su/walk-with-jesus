@@ -26,8 +26,11 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] Selecting a new destination while moving redirects the traveler cleanly.
 - [ ] Arrow keys move the traveler during desktop testing.
 - [ ] The traveler remains inside the playable area.
+- [ ] The camera follows the traveler beyond the opening view; the journey is not confined to one screen.
 - [ ] Jesus is visibly separate from the player and cannot be controlled.
 - [ ] When the traveler catches up, Jesus leads onward to the next road position.
+- [ ] The traveler’s legs alternate and the body rises and falls while walking, then settles while idle.
+- [ ] Jesus’ legs alternate and the body rises and falls while He is leading, then settles while idle.
 - [ ] Clicking the Title button does not also move the traveler.
 
 ### Responsive landscape layout

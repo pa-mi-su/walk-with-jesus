@@ -3,6 +3,7 @@ extends Node2D
 signal return_to_title_requested
 
 @onready var road_background: Sprite2D = $RoadBackground
+@onready var journey_camera: Camera2D = %JourneyCamera
 @onready var world_content: Node2D = $WorldContent
 @onready var navigation_region: NavigationRegion2D = $WorldContent/NavigationRegion2D
 @onready var player: TravelerPlayer = $WorldContent/Player
@@ -15,6 +16,13 @@ signal return_to_title_requested
 @onready var destination_marker: Node2D = $WorldContent/DestinationMarker
 
 var _session_active := false
+
+
+func _process(delta: float) -> void:
+	if not _session_active:
+		return
+	var lead_position := player.position.lerp(jesus_guide.position, 0.28)
+	journey_camera.position = journey_camera.position.lerp(lead_position, 1.0 - exp(-delta * 5.0))
 
 
 func _ready() -> void:
@@ -33,9 +41,11 @@ func _ready() -> void:
 func begin_session() -> void:
 	_session_active = true
 	interface.visible = true
-	player.position = Vector2(825.0, 650.0)
+	player.position = Vector2(1450.0, 1145.0)
 	player.stop()
 	jesus_guide.reset_with_follower(player)
+	journey_camera.position = player.position.lerp(jesus_guide.position, 0.28)
+	journey_camera.reset_smoothing()
 	journey_hint.text = "Follow Jesus along the road"
 	destination_marker.visible = false
 	queue_redraw()
@@ -93,18 +103,20 @@ func _build_navigation_area() -> void:
 	# The polygon follows the visible road, so taps on scenery resolve to its nearest edge.
 	var polygon := NavigationPolygon.new()
 	polygon.vertices = PackedVector2Array([
-		Vector2(560.0, 690.0),
-		Vector2(500.0, 550.0),
-		Vector2(380.0, 400.0),
-		Vector2(245.0, 255.0),
-		Vector2(40.0, 105.0),
-		Vector2(40.0, 40.0),
-		Vector2(260.0, 40.0),
-		Vector2(430.0, 170.0),
-		Vector2(575.0, 305.0),
-		Vector2(710.0, 450.0),
-		Vector2(925.0, 650.0),
-		Vector2(965.0, 690.0),
+		Vector2(1260.0, 1225.0),
+		Vector2(1050.0, 1025.0),
+		Vector2(825.0, 835.0),
+		Vector2(610.0, 650.0),
+		Vector2(395.0, 455.0),
+		Vector2(165.0, 245.0),
+		Vector2(120.0, 75.0),
+		Vector2(395.0, 75.0),
+		Vector2(590.0, 270.0),
+		Vector2(790.0, 450.0),
+		Vector2(1010.0, 635.0),
+		Vector2(1230.0, 820.0),
+		Vector2(1575.0, 1110.0),
+		Vector2(1600.0, 1195.0),
 	])
 	polygon.add_polygon(PackedInt32Array(range(polygon.vertices.size())))
 	navigation_region.navigation_polygon = polygon
@@ -124,14 +136,9 @@ func _update_responsive_interface() -> void:
 
 
 func _update_world_layout() -> void:
-	if not is_node_ready() or road_background.texture == null:
-		return
-	var viewport_size := get_viewport_rect().size
-	var texture_size := road_background.texture.get_size()
-	var cover_scale := maxf(viewport_size.x / texture_size.x, viewport_size.y / texture_size.y)
-	road_background.position = viewport_size * 0.5
-	road_background.scale = Vector2.ONE * cover_scale
-	world_content.position = (viewport_size - Vector2(1280.0, 720.0)) * 0.5
+	# The camera, not the world, adapts to viewport changes so the road can continue
+	# beyond the opening screen on every landscape aspect ratio.
+	world_content.position = Vector2.ZERO
 
 
 func _draw() -> void:

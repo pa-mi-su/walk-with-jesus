@@ -89,6 +89,7 @@ func _check_main_flow() -> void:
 	await process_frame
 	await process_frame
 	_expect_equal(guide.get_route_index(), 1, "Jesus leads onward when the player catches up")
+	_expect_true(guide.get_walk_amount() > 0.0, "Jesus uses a visible walking cycle while leading")
 
 	main.queue_free()
 	await process_frame
@@ -108,10 +109,16 @@ func _check_player_movement() -> void:
 
 	var player := world.get_node("WorldContent/Player") as TravelerPlayer
 	var starting_position := player.global_position
-	world._set_walk_target(starting_position + Vector2(0.0, -100.0))
-	for _frame in range(45):
+	var camera := world.get_node("JourneyCamera") as Camera2D
+	var starting_camera_position := camera.position
+	var peak_walk_amount := 0.0
+	world._set_walk_target(starting_position + Vector2(-250.0, -220.0))
+	for _frame in range(100):
 		await physics_frame
-	_expect_true(player.global_position.distance_to(starting_position) > 20.0, "player follows a navigation target")
+		peak_walk_amount = maxf(peak_walk_amount, player.get_walk_amount())
+	_expect_true(player.global_position.distance_to(starting_position) > 200.0, "player travels beyond the opening screen area")
+	_expect_true(camera.position.distance_to(starting_camera_position) > 80.0, "camera follows the journey down the road")
+	_expect_true(peak_walk_amount > 0.5, "the selected traveler uses a visible walking cycle")
 
 	world.queue_free()
 	await process_frame

@@ -29,6 +29,12 @@ func _capture() -> void:
 	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
 	_save_viewport("movement-1280x720.png")
+	var desktop_world := main.get_node("TestWorld")
+	desktop_world._set_walk_target(desktop_world.player.position + Vector2(-360.0, -300.0))
+	for _frame in range(70):
+		await physics_frame
+	await _wait_for_render()
+	_save_viewport("journey-progress-1280x720.png")
 
 	main.get_node("TestWorld").return_to_title_requested.emit()
 	root.size = Vector2i(844, 390)
@@ -41,6 +47,12 @@ func _capture() -> void:
 	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
 	_save_viewport("movement-844x390.png")
+	var phone_world := main.get_node("TestWorld")
+	phone_world._set_walk_target(phone_world.player.position + Vector2(-300.0, -250.0))
+	for _frame in range(60):
+		await physics_frame
+	await _wait_for_render()
+	_save_viewport("journey-progress-844x390.png")
 	main.get_node("TestWorld").return_to_title_requested.emit()
 
 	root.size = Vector2i(1024, 768)

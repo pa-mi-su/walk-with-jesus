@@ -12,6 +12,8 @@ signal destination_reached
 
 var _walking_to_target := false
 var _facing := Vector2.UP
+var _walk_phase := 0.0
+var _walk_amount := 0.0
 
 
 func _ready() -> void:
@@ -66,6 +68,11 @@ func _physics_process(_delta: float) -> void:
 		clampf(position.y, movement_bounds.position.y, movement_bounds.end.y)
 	)
 	_update_visual()
+	_update_walk_animation(_delta, velocity.length_squared() > 0.01)
+
+
+func get_walk_amount() -> float:
+	return _walk_amount
 
 
 func _update_visual() -> void:
@@ -78,6 +85,19 @@ func _update_visual() -> void:
 	sprite.scale = Vector2(horizontal_sign * visual_scale, visual_scale)
 	sprite.position.y = -768.0 * visual_scale
 	queue_redraw()
+
+
+func _update_walk_animation(delta: float, is_walking: bool) -> void:
+	_walk_amount = move_toward(_walk_amount, 1.0 if is_walking else 0.0, delta * 8.0)
+	if is_walking:
+		_walk_phase = fmod(_walk_phase + delta * 10.0, TAU)
+	var material := sprite.material as ShaderMaterial
+	if material != null:
+		material.set_shader_parameter("walk_phase", _walk_phase)
+		material.set_shader_parameter("walk_amount", _walk_amount)
+	var base_y := -768.0 * absf(sprite.scale.y)
+	sprite.position.y = base_y - absf(sin(_walk_phase)) * 3.0 * _walk_amount
+	sprite.rotation = sin(_walk_phase) * 0.012 * _walk_amount
 
 
 func _draw() -> void:

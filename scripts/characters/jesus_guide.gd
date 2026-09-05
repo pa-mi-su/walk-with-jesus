@@ -4,10 +4,12 @@ extends Node2D
 signal route_completed
 
 @export var route_points := PackedVector2Array([
-	Vector2(610.0, 465.0),
-	Vector2(505.0, 365.0),
-	Vector2(390.0, 265.0),
-	Vector2(275.0, 165.0),
+	Vector2(1310.0, 1030.0),
+	Vector2(1120.0, 875.0),
+	Vector2(915.0, 710.0),
+	Vector2(705.0, 535.0),
+	Vector2(500.0, 360.0),
+	Vector2(300.0, 175.0),
 ])
 @export var follower_trigger_distance := 120.0
 @export var walking_speed := 92.0
@@ -19,9 +21,14 @@ var _route_index := 0
 var _moving := false
 var _completed := false
 var _movement_tween: Tween
+var _walk_phase := 0.0
+var _walk_amount := 0.0
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_update_walk_animation(delta, _moving)
+	if _moving:
+		_update_visual_scale()
 	if _follower == null or _moving or _completed:
 		return
 	if global_position.distance_to(_follower.global_position) <= follower_trigger_distance:
@@ -51,6 +58,10 @@ func get_route_index() -> int:
 	return _route_index
 
 
+func get_walk_amount() -> float:
+	return _walk_amount
+
+
 func _advance_to_next_stop() -> void:
 	if _route_index >= route_points.size() - 1:
 		_completed = true
@@ -75,11 +86,25 @@ func _finish_movement() -> void:
 
 
 func _update_visual_scale() -> void:
-	var depth := clampf((position.y - 40.0) / 650.0, 0.0, 1.0)
+	var depth := clampf((position.y - 70.0) / 1130.0, 0.0, 1.0)
 	var scale_factor := 0.12 * lerpf(0.72, 1.05, depth)
 	var horizontal_sign := signf(sprite.scale.x) if not is_zero_approx(sprite.scale.x) else 1.0
 	sprite.scale = Vector2(horizontal_sign * scale_factor, scale_factor)
-	sprite.position.y = -768.0 * scale_factor
+	if _walk_amount <= 0.01:
+		sprite.position.y = -768.0 * scale_factor
+
+
+func _update_walk_animation(delta: float, is_walking: bool) -> void:
+	_walk_amount = move_toward(_walk_amount, 1.0 if is_walking else 0.0, delta * 8.0)
+	if is_walking:
+		_walk_phase = fmod(_walk_phase + delta * 9.5, TAU)
+	var material := sprite.material as ShaderMaterial
+	if material != null:
+		material.set_shader_parameter("walk_phase", _walk_phase)
+		material.set_shader_parameter("walk_amount", _walk_amount)
+	var base_y := -768.0 * absf(sprite.scale.y)
+	sprite.position.y = base_y - absf(sin(_walk_phase)) * 3.0 * _walk_amount
+	sprite.rotation = sin(_walk_phase) * 0.012 * _walk_amount
 
 
 func _draw() -> void:
