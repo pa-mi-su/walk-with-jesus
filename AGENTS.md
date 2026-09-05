@@ -4,6 +4,8 @@
 
 Walk With Jesus is a peaceful, offline-first Catholic educational game and a companion experience to Sanctuary. The first playable story is the Parable of the Good Samaritan. The player controls a fictional disciple or traveler; the player never directly controls Jesus.
 
+At the start of a new journey, the player chooses one explicitly fictional traveler. That selected person is the player-controlled character throughout the story. Jesus is a non-player guide whom the traveler follows through the environment and teaching encounters.
+
 This repository targets Godot 4.7.2 stable with GDScript and a single project exported to desktop, iOS/iPadOS, and Android. Use the Compatibility renderer unless a measured requirement justifies a change; it supports the broadest mobile range and iOS simulator testing.
 
 ## Current phase
@@ -73,6 +75,7 @@ For behavior that is awkward to automate—touch movement, responsive layout, vi
 ## Religious-content constraints
 
 - Jesus is an NPC and is never directly player-controlled.
+- The selected fictional traveler is the only player-controlled story character. Jesus may lead, stop, teach, and trigger encounters, but control must never transfer to Him.
 - Do not invent words for Jesus and present them as Scripture. For the prototype, prefer Scripture references and clearly labeled original summaries.
 - Jesus' words and important actions must remain faithful to Scripture and Catholic teaching.
 - Portray Jesus, biblical people, sacred events, suffering, and moral failure reverently; avoid mockery, trivialization, sensational violence, or reward language that reduces virtue to points alone.

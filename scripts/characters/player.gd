@@ -27,6 +27,14 @@ func move_to(target: Vector2) -> void:
 	_walking_to_target = true
 
 
+func set_character_texture(texture: Texture2D) -> void:
+	if texture == null:
+		push_error("Cannot set an empty player character texture")
+		return
+	sprite.texture = texture
+	_update_visual()
+
+
 func stop() -> void:
 	_walking_to_target = false
 	velocity = Vector2.ZERO

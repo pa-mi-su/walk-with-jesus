@@ -6,10 +6,12 @@ signal return_to_title_requested
 @onready var world_content: Node2D = $WorldContent
 @onready var navigation_region: NavigationRegion2D = $WorldContent/NavigationRegion2D
 @onready var player: TravelerPlayer = $WorldContent/Player
+@onready var jesus_guide: JesusGuide = $WorldContent/JesusGuide
 @onready var back_button: Button = %BackButton
 @onready var interface: CanvasLayer = $Interface
 @onready var interface_margin: MarginContainer = $Interface/SafeMargin
 @onready var instruction_label: Label = %InstructionLabel
+@onready var journey_hint: Label = %JourneyHint
 @onready var destination_marker: Node2D = $WorldContent/DestinationMarker
 
 var _session_active := false
@@ -19,6 +21,7 @@ func _ready() -> void:
 	_build_navigation_area()
 	back_button.pressed.connect(func() -> void: return_to_title_requested.emit())
 	player.destination_reached.connect(_on_destination_reached)
+	jesus_guide.route_completed.connect(_on_guide_route_completed)
 	interface.visible = false
 	destination_marker.visible = false
 	get_viewport().size_changed.connect(_update_responsive_interface)
@@ -30,16 +33,27 @@ func _ready() -> void:
 func begin_session() -> void:
 	_session_active = true
 	interface.visible = true
-	player.position = Vector2(700.0, 590.0)
+	player.position = Vector2(825.0, 650.0)
 	player.stop()
+	jesus_guide.reset_with_follower(player)
+	journey_hint.text = "Follow Jesus along the road"
 	destination_marker.visible = false
 	queue_redraw()
+
+
+func set_player_character(character: Dictionary) -> void:
+	var texture_path := str(character.get("texture_path", ""))
+	if texture_path.is_empty() or not ResourceLoader.exists(texture_path):
+		push_error("Selected character has no valid texture: %s" % texture_path)
+		return
+	player.set_character_texture(load(texture_path) as Texture2D)
 
 
 func end_session() -> void:
 	_session_active = false
 	interface.visible = false
 	player.stop()
+	jesus_guide.stop_guiding()
 	destination_marker.visible = false
 
 
@@ -69,6 +83,10 @@ func _set_walk_target(target: Vector2) -> void:
 
 func _on_destination_reached() -> void:
 	destination_marker.visible = false
+
+
+func _on_guide_route_completed() -> void:
+	journey_hint.text = "Stay near Jesus and listen"
 
 
 func _build_navigation_area() -> void:

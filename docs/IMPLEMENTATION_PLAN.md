@@ -8,7 +8,7 @@ Build the MVP as a 2D isometric game rather than a 3D game. In practical terms, 
 
 Use Godot's Compatibility renderer for the widest mobile support and iOS simulator compatibility. Use a `CharacterBody2D` player guided by `NavigationAgent2D`; a click or tap selects a reachable destination and the navigation system supplies a path around obstacles.
 
-The story will be a data-driven state machine: content data identifies the current beat and available choices; core logic applies consequences and advances to the next beat; presentation scenes render dialogue, choices, world cues, and journal updates. This allows later Gospel stories to reuse the same systems.
+The story will be a data-driven state machine: content data identifies the current beat and available choices; core logic applies consequences and advances to the next beat; presentation scenes render dialogue, choices, world cues, and journal updates. This allows later Gospel stories to reuse the same systems. A new journey begins with selection of an explicitly fictional player traveler. That character follows Jesus as a non-player guide through route and teaching triggers; the player never controls Jesus.
 
 ## Milestones
 
@@ -31,6 +31,7 @@ Approval checkpoint: verify the GitHub destination and confirm that only plannin
 - Add a controllable fictional traveler with unified click/tap destination movement and optional keyboard debug controls.
 - Add camera bounds, collision/navigation, safe-area-aware UI, smoke checks, and desktop test instructions.
 - Verify representative 16:9, 19.5:9, and 4:3 landscape viewports.
+- Add a responsive startup character-selection step backed by external character data, and carry the selected fictional traveler into gameplay.
 
 Approval checkpoint: confirm the 2D isometric movement feel and overall visual direction before story systems expand.
 
@@ -39,6 +40,7 @@ Approval checkpoint: confirm the 2D isometric movement feel and overall visual d
 - Add content schemas and validation for story metadata, beats, speakers, summaries, choices, consequences, and references.
 - Add reusable dialogue and choice presentation.
 - Add Jesus as a reverently presented NPC and build the short, provisional teaching scene using an original summary plus Luke 10:25–37 references.
+- Make Jesus the route-leading NPC: the selected traveler follows Him to teaching and encounter locations while Jesus remains outside player control.
 - Add a story runner that emits presentation-neutral events.
 - Test parsing, invalid content, branching, and deterministic state transitions.
 

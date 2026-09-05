@@ -10,7 +10,10 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] The title reads “Walk With Jesus.”
 - [ ] “A Sanctuary Experience” is clearly visible.
 - [ ] “Begin the Journey” is reachable by mouse and keyboard focus.
-- [ ] Activating the button opens the movement environment.
+- [ ] Activating the button opens character selection before the movement environment.
+- [ ] Four fictional travelers are visible and selectable; Jesus is not a selectable character.
+- [ ] Continue remains disabled until a traveler is chosen, then names the chosen traveler.
+- [ ] The chosen traveler is the player-controlled person shown in the movement environment.
 - [ ] The Title button returns to the title screen.
 
 ### Movement
@@ -21,6 +24,8 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] Selecting a new destination while moving redirects the traveler cleanly.
 - [ ] Arrow keys move the traveler during desktop testing.
 - [ ] The traveler remains inside the playable area.
+- [ ] Jesus is visibly separate from the player and cannot be controlled.
+- [ ] When the traveler catches up, Jesus leads onward to the next road position.
 - [ ] Clicking the Title button does not also move the traveler.
 
 ### Responsive landscape layout
@@ -35,7 +40,7 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 
 - [ ] The isometric tiles form a readable, coherent ground plane.
 - [ ] The road is visually distinct from the surrounding ground.
-- [ ] The placeholder traveler remains visually in front of the ground.
+- [ ] The selected traveler and Jesus remain visually in front of the ground.
 - [ ] Repeatedly moving between title and world does not duplicate UI, freeze input, or log errors.
 - [ ] Suspending and resuming a desktop or mobile debug build does not break input.
 

@@ -6,7 +6,7 @@ The project will use Godot 4.7.2 and GDScript, with one offline-first codebase t
 
 ## Project status
 
-Milestone 1 development. The project currently includes a responsive title screen and a small 2D isometric movement environment. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+Milestone 1 development. The project currently includes a responsive title screen, four-character traveler selection, and a small 2D isometric environment where the chosen traveler follows Jesus along the road. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 
 No production Sanctuary services, credentials, accounts, analytics, advertising, or purchases are connected.
 
@@ -21,7 +21,7 @@ godot --editor --path .
 godot --path .
 ```
 
-On the title screen, choose **Begin the Journey**. Click or tap the road to move the placeholder traveler; desktop arrow keys are also supported.
+On the title screen, choose **Begin the Journey**, select one of the four fictional travelers, and continue. Click or tap the road to follow Jesus; desktop arrow keys are also supported.
 
 Run the automated checks with:
 

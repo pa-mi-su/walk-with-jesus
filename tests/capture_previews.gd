@@ -24,6 +24,10 @@ func _capture() -> void:
 
 	main.get_node("TitleScreen").start_requested.emit()
 	await _wait_for_render()
+	_save_viewport("character-selection-1280x720.png")
+	main.get_node("CharacterSelection").select_character_by_index(2)
+	main.get_node("CharacterSelection").confirm_selection()
+	await _wait_for_render()
 	_save_viewport("movement-1280x720.png")
 
 	main.get_node("TestWorld").return_to_title_requested.emit()
@@ -31,6 +35,10 @@ func _capture() -> void:
 	await _wait_for_render()
 	_save_viewport("title-844x390.png")
 	main.get_node("TitleScreen").start_requested.emit()
+	await _wait_for_render()
+	_save_viewport("character-selection-844x390.png")
+	main.get_node("CharacterSelection").select_character_by_index(1)
+	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
 	_save_viewport("movement-844x390.png")
 	main.get_node("TestWorld").return_to_title_requested.emit()

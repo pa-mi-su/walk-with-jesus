@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "content_status": "provisional",
+  "characters": [
+    {
+      "id": "natan",
+      "display_name": "Natan",
+      "description": "Fictional traveler",
+      "texture_path": "res://assets/generated/traveler-standing.png",
+      "accent_color": "#4CB6D8"
+    },
+    {
+      "id": "mara",
+      "display_name": "Mara",
+      "description": "Fictional traveler",
+      "texture_path": "res://assets/generated/traveler-mara.png",
+      "accent_color": "#E5C66A"
+    },
+    {
+      "id": "asher",
+      "display_name": "Asher",
+      "description": "Fictional traveler",
+      "texture_path": "res://assets/generated/traveler-asher.png",
+      "accent_color": "#91A778"
+    },
+    {
+      "id": "talia",
+      "display_name": "Talia",
+      "description": "Fictional traveler",
+      "texture_path": "res://assets/generated/traveler-talia.png",
+      "accent_color": "#C78BB8"
+    }
+  ]
+}

@@ -9,6 +9,7 @@
 The following prototype assets were generated specifically for Walk With Jesus with OpenAI's built-in image-generation tool on September 5, 2026:
 
 - `generated/jericho-road-background.png`: peaceful, painterly, orthographic isometric biblical-era road environment using Sanctuary's deep blue-teal and restrained gold visual language.
-- `generated/traveler-standing.png`: fictional first-century traveler sprite. The character is explicitly not Jesus and includes no sacred iconography.
+- `generated/traveler-standing.png`, `generated/traveler-mara.png`, `generated/traveler-asher.png`, and `generated/traveler-talia.png`: selectable fictional first-century traveler sprites. The characters are explicitly not Jesus and include no sacred iconography. The latter three were generated as coordinated variants using the first traveler as a rendering-style and pose reference; checkerboard backgrounds on two drafts were replaced with genuine transparency before use.
+- `generated/jesus-guide.png`: a respectful, first-century Jewish teacher depiction used only for the non-player Jesus guide. The generation brief requested olive-brown skin, dark wavy shoulder-length hair and beard, an off-white tunic, a deep red-brown mantle, no halo or cross, and a transparent background matching the traveler sprites.
 
-Both generated assets require art-direction, historical, cultural, and religious-content review before release. They contain no third-party game assets or direct Bible quotation.
+All generated assets require art-direction, historical, cultural, and religious-content review before release. They contain no third-party game assets or direct Bible quotation.

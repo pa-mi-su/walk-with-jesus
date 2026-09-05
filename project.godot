@@ -9,6 +9,10 @@ config/name="Walk With Jesus"
 config/description="A peaceful Catholic educational game and Sanctuary companion experience."
 run/main_scene="res://scenes/app/main.tscn"
 
+[autoload]
+
+GameState="*res://autoload/game_state.gd"
+
 [display]
 
 window/size/viewport_width=1280
