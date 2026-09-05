@@ -77,12 +77,12 @@ func _check_player_movement() -> void:
 	await physics_frame
 	await physics_frame
 
-	var player := world.get_node("Player") as TravelerPlayer
+	var player := world.get_node("WorldContent/Player") as TravelerPlayer
 	var starting_position := player.global_position
-	player.move_to(starting_position + Vector2(100.0, 0.0))
+	world._set_walk_target(starting_position + Vector2(0.0, -100.0))
 	for _frame in range(45):
 		await physics_frame
-	_expect_true(player.global_position.x > starting_position.x + 20.0, "player follows a navigation target")
+	_expect_true(player.global_position.distance_to(starting_position) > 20.0, "player follows a navigation target")
 
 	world.queue_free()
 	await process_frame

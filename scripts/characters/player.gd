@@ -4,18 +4,21 @@ extends CharacterBody2D
 signal destination_reached
 
 @export var movement_speed: float = 230.0
-@export var movement_bounds := Rect2(88.0, 174.0, 1104.0, 474.0)
+@export var movement_bounds := Rect2(40.0, 40.0, 930.0, 650.0)
+@export var sprite_base_scale := 0.12
 
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
+@onready var sprite: Sprite2D = $Sprite2D
 
 var _walking_to_target := false
-var _facing := Vector2.DOWN
+var _facing := Vector2.UP
 
 
 func _ready() -> void:
 	navigation_agent.path_desired_distance = 8.0
 	navigation_agent.target_desired_distance = 10.0
 	navigation_agent.avoidance_enabled = false
+	_update_visual()
 	queue_redraw()
 
 
@@ -48,29 +51,30 @@ func _physics_process(_delta: float) -> void:
 
 	if velocity.length_squared() > 0.01:
 		_facing = velocity.normalized()
-		queue_redraw()
 
 	move_and_slide()
-	global_position = Vector2(
-		clampf(global_position.x, movement_bounds.position.x, movement_bounds.end.x),
-		clampf(global_position.y, movement_bounds.position.y, movement_bounds.end.y)
+	position = Vector2(
+		clampf(position.x, movement_bounds.position.x, movement_bounds.end.x),
+		clampf(position.y, movement_bounds.position.y, movement_bounds.end.y)
 	)
+	_update_visual()
+
+
+func _update_visual() -> void:
+	if not is_node_ready():
+		return
+	var depth := clampf((position.y - movement_bounds.position.y) / movement_bounds.size.y, 0.0, 1.0)
+	var perspective_scale := lerpf(0.72, 1.05, depth)
+	var horizontal_sign := -1.0 if _facing.x < -0.05 else 1.0
+	var visual_scale := sprite_base_scale * perspective_scale
+	sprite.scale = Vector2(horizontal_sign * visual_scale, visual_scale)
+	sprite.position.y = -768.0 * visual_scale
+	queue_redraw()
 
 
 func _draw() -> void:
-	# The placeholder character is intentionally original, simple geometry.
-	draw_set_transform(Vector2(0.0, 12.0), 0.0, Vector2(1.0, 0.45))
-	draw_circle(Vector2.ZERO, 20.0, Color(0.05, 0.09, 0.08, 0.32))
+	var depth := clampf((position.y - movement_bounds.position.y) / movement_bounds.size.y, 0.0, 1.0)
+	var shadow_radius := lerpf(12.0, 20.0, depth)
+	draw_set_transform(Vector2(0.0, 1.0), 0.0, Vector2(1.0, 0.36))
+	draw_circle(Vector2.ZERO, shadow_radius, Color(0.02, 0.055, 0.065, 0.42))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	var robe := PackedVector2Array([
-		Vector2(-14.0, -2.0),
-		Vector2(14.0, -2.0),
-		Vector2(20.0, 34.0),
-		Vector2(-20.0, 34.0),
-	])
-	draw_colored_polygon(robe, Color("80523d"))
-	draw_polyline(PackedVector2Array([robe[0], robe[1], robe[2], robe[3], robe[0]]), Color("422e28"), 2.0)
-	draw_circle(Vector2(0.0, -17.0), 13.0, Color("bd8059"))
-	draw_arc(Vector2(0.0, -20.0), 13.0, PI, TAU, 18, Color("46342c"), 5.0)
-	var facing_tip := _facing.normalized() * 9.0
-	draw_circle(Vector2(facing_tip.x * 0.35, -16.0 + facing_tip.y * 0.18), 1.8, Color("302521"))

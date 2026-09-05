@@ -1,38 +1,75 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/test_world.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2_player"]
+[ext_resource type="Texture2D" path="res://assets/generated/jericho-road-background.png" id="3_background"]
+[ext_resource type="Script" path="res://scripts/world/destination_marker.gd" id="4_marker"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_instruction"]
-bg_color = Color(0.055, 0.11, 0.105, 0.9)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-content_margin_left = 20.0
-content_margin_top = 12.0
-content_margin_right = 20.0
-content_margin_bottom = 12.0
+[sub_resource type="SystemFont" id="SystemFont_brand"]
+font_names = PackedStringArray("Avenir Next", "SF Pro Display", "Segoe UI", "Arial")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
-bg_color = Color(0.075, 0.145, 0.14, 0.92)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar"]
+bg_color = Color(0.035, 0.12, 0.16, 0.84)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.88, 0.76, 0.46, 0.55)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(0.54, 0.76, 0.81, 0.45)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.055, 0.18, 0.23, 0.93)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.95, 0.8, 0.35, 0.66)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hint"]
+bg_color = Color(0.035, 0.12, 0.16, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.54, 0.76, 0.81, 0.32)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+content_margin_left = 24.0
+content_margin_top = 11.0
+content_margin_right = 24.0
+content_margin_bottom = 11.0
 
 [node name="TestWorld" type="Node2D"]
 script = ExtResource("1_world")
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+[node name="RoadBackground" type="Sprite2D" parent="."]
+position = Vector2(640, 360)
+scale = Vector2(0.766, 0.766)
+texture = ExtResource("3_background")
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(640, 420)
+[node name="WorldContent" type="Node2D" parent="."]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="WorldContent"]
+
+[node name="Player" parent="WorldContent" instance=ExtResource("2_player")]
+position = Vector2(700, 590)
+
+[node name="DestinationMarker" type="Node2D" parent="WorldContent"]
+z_index = 5
+script = ExtResource("4_marker")
 
 [node name="Interface" type="CanvasLayer" parent="."]
 
@@ -47,6 +84,7 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme_override_fonts/font = SubResource("SystemFont_brand")
 
 [node name="Layout" type="VBoxContainer" parent="Interface/SafeMargin"]
 layout_mode = 2
@@ -59,34 +97,53 @@ theme_override_constants/separation = 14
 
 [node name="BackButton" type="Button" parent="Interface/SafeMargin/Layout/TopBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(112, 50)
+custom_minimum_size = Vector2(128, 54)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
-text = "‹ Title"
+theme_override_styles/hover = SubResource("StyleBoxFlat_button")
+text = "‹  Sanctuary"
 
 [node name="InstructionPanel" type="PanelContainer" parent="Interface/SafeMargin/Layout/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_instruction")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
 
-[node name="Instruction" type="Label" parent="Interface/SafeMargin/Layout/TopBar/InstructionPanel"]
+[node name="InstructionLabel" type="Label" parent="Interface/SafeMargin/Layout/TopBar/InstructionPanel"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.93, 0.84, 1)
-theme_override_font_sizes/font_size = 18
-text = "Tap or click the road to walk · Arrow keys also work on desktop"
+theme_override_colors/font_color = Color(0.96, 0.98, 0.98, 1)
+theme_override_font_sizes/font_size = 17
+text = "Tap or click the road to walk"
 horizontal_alignment = 1
-autowrap_mode = 2
+
+[node name="Chapter" type="PanelContainer" parent="Interface/SafeMargin/Layout/TopBar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="Label" type="Label" parent="Interface/SafeMargin/Layout/TopBar/Chapter"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.38, 1)
+theme_override_font_sizes/font_size = 15
+text = "LUKE 10"
 
 [node name="Spacer" type="Control" parent="Interface/SafeMargin/Layout"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="PrototypeLabel" type="Label" parent="Interface/SafeMargin/Layout"]
+[node name="HintCenter" type="CenterContainer" parent="Interface/SafeMargin/Layout"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.16, 0.2, 0.17, 0.78)
+mouse_filter = 2
+
+[node name="Hint" type="PanelContainer" parent="Interface/SafeMargin/Layout/HintCenter"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hint")
+
+[node name="Label" type="Label" parent="Interface/SafeMargin/Layout/HintCenter/Hint"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.92, 0.93, 1)
 theme_override_font_sizes/font_size = 15
-text = "MOVEMENT PROTOTYPE · STORY CONTENT ARRIVES IN MILESTONE 2"
-horizontal_alignment = 1
+text = "Follow the road toward Jericho"
