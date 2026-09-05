@@ -47,6 +47,8 @@ func show_story_stop(stop: Dictionary) -> void:
 	var stop_choices: Array = stop.get("choices", [])
 	choice_one.text = str(stop_choices[0].get("label", "Choice one")) if stop_choices.size() > 0 else "Choice one"
 	choice_two.text = str(stop_choices[1].get("label", "Choice two")) if stop_choices.size() > 1 else "Choice two"
+	choice_one.disabled = not bool(stop_choices[0].get("available", true)) if stop_choices.size() > 0 else true
+	choice_two.disabled = not bool(stop_choices[1].get("available", true)) if stop_choices.size() > 1 else true
 	choices.visible = stop_choices.size() >= 2
 	response_label.visible = false
 	primary_button.visible = false

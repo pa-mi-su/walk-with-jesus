@@ -14,9 +14,11 @@ var _walking_to_target := false
 var _facing := Vector2.UP
 var _walk_phase := 0.0
 var _walk_amount := 0.0
+var _full_strength_speed := 230.0
 
 
 func _ready() -> void:
+	_full_strength_speed = movement_speed
 	navigation_agent.path_desired_distance = 8.0
 	navigation_agent.target_desired_distance = 10.0
 	navigation_agent.avoidance_enabled = false
@@ -73,6 +75,10 @@ func _physics_process(_delta: float) -> void:
 
 func get_walk_amount() -> float:
 	return _walk_amount
+
+
+func set_strength_ratio(ratio: float) -> void:
+	movement_speed = lerpf(_full_strength_speed * 0.58, _full_strength_speed, clampf(ratio, 0.0, 1.0))
 
 
 func _update_visual() -> void:

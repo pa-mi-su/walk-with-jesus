@@ -146,6 +146,10 @@ func _check_player_movement() -> void:
 	_expect_true(player.global_position.distance_to(starting_position) > 200.0, "player travels beyond the opening screen area")
 	_expect_true(camera.position.distance_to(starting_camera_position) > 80.0, "camera follows the journey down the road")
 	_expect_true(peak_walk_amount > 0.5, "the selected traveler uses a visible walking cycle")
+	_expect_true(
+		world.get_provision_count("bread") + world.get_provision_count("water") > 0,
+		"walking over bread or water collects journey provisions"
+	)
 
 	world.queue_free()
 	await process_frame
@@ -165,13 +169,28 @@ func _check_complete_journey() -> void:
 				break
 			await process_frame
 		_expect_equal(world.jesus_guide.get_route_index(), route_index, "Jesus reaches guided stop %d" % route_index)
+		if route_index == 2:
+			world.add_provision("water", 0.0)
+		elif route_index == 4:
+			world.add_provision("bread", 0.0)
 		world.player.stop()
 		world.player.position = world.jesus_guide.position + Vector2(40.0, 30.0)
 		await process_frame
 		if route_index < 5:
 			_expect_equal(world.get_journey_phase(), "story", "stop %d opens a choice" % route_index)
-			world.choose_story_response(route_index % 2)
+			var choice_index := 1
+			if route_index == 2:
+				choice_index = 0
+				_expect_true(not world.story_overlay.choice_one.disabled, "collected water unlocks the offer-water response")
+			elif route_index == 4:
+				choice_index = 0
+				_expect_true(not world.story_overlay.choice_one.disabled, "collected bread unlocks the share-bread response")
+			world.choose_story_response(choice_index)
 			_expect_equal(world.get_journey_phase(), "story_response", "stop %d responds to the choice" % route_index)
+			if route_index == 2:
+				_expect_equal(world.get_provision_count("water"), 0, "offering water consumes one collected flask")
+			elif route_index == 4:
+				_expect_equal(world.get_provision_count("bread"), 0, "sharing bread consumes one collected loaf")
 			world.continue_story()
 		else:
 			_expect_equal(world.get_journey_phase(), "reflection", "the final stop opens the journey reflection")

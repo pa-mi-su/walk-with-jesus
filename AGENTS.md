@@ -76,6 +76,7 @@ For behavior that is awkward to automate—touch movement, responsive layout, vi
 ## Religious-content constraints
 
 - Jesus is an NPC and is never directly player-controlled.
+- Do not portray Jesus with a rechargeable power or energy meter. Resource mechanics belong to the fictional traveler or shared provisions and should support hospitality, preparedness, and acts of mercy.
 - The selected fictional traveler is the only player-controlled story character. Jesus may lead, stop, teach, and trigger encounters, but control must never transfer to Him.
 - Do not invent words for Jesus and present them as Scripture. For the prototype, prefer Scripture references and clearly labeled original summaries.
 - Jesus' words and important actions must remain faithful to Scripture and Catholic teaching.

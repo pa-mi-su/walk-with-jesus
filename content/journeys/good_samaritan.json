@@ -7,7 +7,7 @@
   "intro": {
     "kicker": "JOURNEY 1 · LUKE 10",
     "title": "Walk with Jesus",
-    "body": "Jesus is traveling with His followers. Stay near Him as He leads you toward a teaching about love of neighbor and mercy.",
+    "body": "Jesus is traveling with His followers. Stay near Him as He leads you toward a teaching about love of neighbor and mercy. Gather bread and water to restore your travel strength, or save those provisions for someone in need.",
     "action_label": "Follow Jesus  →"
   },
   "stops": [
@@ -39,8 +39,10 @@
       "reference": "Provisional summary inspired by Luke 10:30",
       "choices": [
         {
-          "label": "His immediate need",
-          "response": "Compassion begins by seeing a person rather than an interruption."
+          "label": "Offer water and draw near",
+          "response": "You use the water you carried to make compassion practical and immediate.",
+          "requires_item": "water",
+          "consume_item": true
         },
         {
           "label": "The danger around him",
@@ -77,8 +79,10 @@
       "reference": "Provisional summary inspired by Luke 10:34–35",
       "choices": [
         {
-          "label": "Share what I have",
-          "response": "You recognize that ordinary resources can become instruments of mercy."
+          "label": "Share bread from my supplies",
+          "response": "The bread you carried becomes an ordinary resource offered with extraordinary mercy.",
+          "requires_item": "bread",
+          "consume_item": true
         },
         {
           "label": "Stay and make a plan",

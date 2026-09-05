@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/test_world.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2_player"]
@@ -53,6 +53,20 @@ content_margin_left = 24.0
 content_margin_top = 11.0
 content_margin_right = 24.0
 content_margin_bottom = 11.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_strength_bg"]
+bg_color = Color(0.018, 0.075, 0.095, 0.95)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_strength_fill"]
+bg_color = Color(0.27, 0.72, 0.75, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="TestWorld" type="Node2D"]
 script = ExtResource("1_world")
@@ -145,6 +159,63 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.84, 0.38, 1)
 theme_override_font_sizes/font_size = 15
 text = "LUKE 10"
+
+[node name="StatusRow" type="HBoxContainer" parent="Interface/SafeMargin/Layout"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+mouse_filter = 1
+theme_override_constants/separation = 10
+
+[node name="PickupToast" type="Label" parent="Interface/SafeMargin/Layout/StatusRow"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.86, 0.43, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.08, 0.1, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
+text = ""
+vertical_alignment = 1
+
+[node name="Provisions" type="PanelContainer" parent="Interface/SafeMargin/Layout/StatusRow"]
+custom_minimum_size = Vector2(225, 42)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="ProvisionsLabel" type="Label" parent="Interface/SafeMargin/Layout/StatusRow/Provisions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.96, 0.96, 1)
+theme_override_font_sizes/font_size = 14
+text = "BREAD  0    WATER  0"
+horizontal_alignment = 1
+
+[node name="Strength" type="PanelContainer" parent="Interface/SafeMargin/Layout/StatusRow"]
+custom_minimum_size = Vector2(275, 42)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="Content" type="HBoxContainer" parent="Interface/SafeMargin/Layout/StatusRow/Strength"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Interface/SafeMargin/Layout/StatusRow/Strength/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.86, 0.89, 1)
+theme_override_font_sizes/font_size = 13
+text = "YOUR STRENGTH"
+
+[node name="StrengthBar" type="ProgressBar" parent="Interface/SafeMargin/Layout/StatusRow/Strength/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(115, 16)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_strength_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_strength_fill")
+value = 100.0
+show_percentage = false
 
 [node name="Spacer" type="Control" parent="Interface/SafeMargin/Layout"]
 layout_mode = 2

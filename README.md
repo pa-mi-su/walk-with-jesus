@@ -6,7 +6,7 @@ The project will use Godot 4.7.2 and GDScript, with one offline-first codebase t
 
 ## Project status
 
-Milestone 1 development. The project currently includes a responsive title screen, four-character traveler selection, and a guided, scrolling 2D isometric journey. Jesus leads the chosen traveler to five story stops: four interactive decisions with immediate reflection feedback and a final journey reflection. Both characters have procedural walking cycles rather than sliding as static cutouts. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+Milestone 1 development. The project currently includes a responsive title screen, four-character traveler selection, and a guided, scrolling 2D isometric journey. Jesus leads the chosen traveler to five story stops: four interactive decisions with immediate reflection feedback and a final journey reflection. Along the way, the traveler can gather bread and water to restore travel strength or save those provisions for acts of mercy. Both characters have procedural walking cycles rather than sliding as static cutouts. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 
 No production Sanctuary services, credentials, accounts, analytics, advertising, or purchases are connected.
 
