@@ -7,6 +7,7 @@ const INTERACTION_DISTANCE := 135.0
 const COLLECTIBLE_SCENE := preload("res://scenes/gameplay/journey_collectible.tscn")
 const MAX_TRAVELER_STRENGTH := 100.0
 const STRENGTH_DRAIN_PER_SECOND := 5.0
+const INCORRECT_ANSWER_PENALTY := 15.0
 const COLLECTIBLE_LAYOUT := [
 	{"kind": "bread", "display_name": "Bread", "strength_restore": 18.0, "texture_path": "res://assets/generated/collectible-bread.png", "position": Vector2(1390.0, 1095.0)},
 	{"kind": "water", "display_name": "Water", "strength_restore": 24.0, "texture_path": "res://assets/generated/collectible-water.png", "position": Vector2(1245.0, 975.0)},
@@ -39,6 +40,7 @@ var _journey_data: Dictionary = {}
 var _current_stop: Dictionary = {}
 var _provisions := {"bread": 0, "water": 0}
 var _traveler_strength := MAX_TRAVELER_STRENGTH
+var _last_answer_correct := false
 var _pickup_tween: Tween
 
 
@@ -165,6 +167,10 @@ func get_traveler_strength() -> float:
 	return _traveler_strength
 
 
+func was_last_answer_correct() -> bool:
+	return _last_answer_correct
+
+
 func add_provision(kind: String, strength_restore: float) -> void:
 	if kind not in _provisions:
 		return
@@ -201,16 +207,14 @@ func _on_story_choice_selected(index: int) -> void:
 	if index < 0 or index >= choices.size():
 		return
 	var choice: Dictionary = choices[index]
-	var required_item := str(choice.get("requires_item", ""))
-	if not required_item.is_empty() and get_provision_count(required_item) <= 0:
-		return
-	if bool(choice.get("consume_item", false)) and not required_item.is_empty():
-		_provisions[required_item] = get_provision_count(required_item) - 1
-		_update_resource_hud()
+	_last_answer_correct = bool(choice.get("correct", false))
+	if not _last_answer_correct:
+		_set_traveler_strength(_traveler_strength - INCORRECT_ANSWER_PENALTY)
 	_journey_phase = "story_response"
 	story_overlay.show_choice_response(
 		str(choice.get("response", "")),
-		str(_current_stop.get("action_label", "Continue with Jesus  →"))
+		str(_current_stop.get("action_label", "Continue with Jesus  →")),
+		_last_answer_correct
 	)
 
 
@@ -245,9 +249,9 @@ func _open_current_story_stop() -> void:
 		story_overlay.show_completion(_current_stop)
 	else:
 		_journey_phase = "story"
-		instruction_label.text = "Choose your response"
-		journey_hint.text = "A moment to listen and act"
-		story_overlay.show_story_stop(_prepare_stop_for_inventory(_current_stop))
+		instruction_label.text = "Answer from Scripture"
+		journey_hint.text = "Choose the correct answer"
+		story_overlay.show_story_stop(_current_stop)
 
 
 func _update_follow_distance(prefix: String) -> void:
@@ -273,26 +277,10 @@ func _load_journey_content() -> void:
 	_journey_data = (parsed as Dictionary).duplicate(true)
 
 
-func _prepare_stop_for_inventory(stop: Dictionary) -> Dictionary:
-	var prepared := stop.duplicate(true)
-	var prepared_choices: Array = prepared.get("choices", [])
-	for choice: Variant in prepared_choices:
-		if not choice is Dictionary:
-			continue
-		var required_item := str(choice.get("requires_item", ""))
-		if required_item.is_empty():
-			choice["available"] = true
-		else:
-			var available := get_provision_count(required_item) > 0
-			choice["available"] = available
-			if not available:
-				choice["label"] = "%s · need %s" % [choice.get("label", "Use supply"), required_item.capitalize()]
-	return prepared
-
-
 func _reset_journey_resources() -> void:
 	_provisions = {"bread": 0, "water": 0}
 	_traveler_strength = MAX_TRAVELER_STRENGTH
+	_last_answer_correct = false
 	player.set_strength_ratio(1.0)
 	pickup_toast.text = ""
 	pickup_toast.modulate.a = 0.0

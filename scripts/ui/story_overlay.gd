@@ -55,10 +55,14 @@ func show_story_stop(stop: Dictionary) -> void:
 	_show_and_focus(choice_one)
 
 
-func show_choice_response(response: String, action_label: String) -> void:
+func show_choice_response(response: String, action_label: String, is_correct: bool) -> void:
 	choices.visible = false
 	prompt_label.visible = false
-	response_label.text = response
+	response_label.add_theme_color_override(
+		"font_color",
+		Color("c8efd6") if is_correct else Color("ffb0a3")
+	)
+	response_label.text = "%s\n%s" % ["CORRECT" if is_correct else "NOT QUITE · JOURNEY STRENGTH -15", response]
 	response_label.visible = true
 	primary_button.text = action_label
 	primary_button.visible = true

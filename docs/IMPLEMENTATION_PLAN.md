@@ -49,9 +49,9 @@ Approval checkpoint: confirm the 2D isometric movement feel and overall visual d
 - Add a story runner that emits presentation-neutral events.
 - Test parsing, invalid content, branching, and deterministic state transitions.
 
-Current prototype slice: Jesus visibly leads each route leg; the HUD gives follow/catch-up guidance; reaching Him opens four externally-authored reflection choices with immediate responses followed by a final Journey 1 reflection. This is an interaction scaffold, not approved final religious copy or the complete Good Samaritan encounter.
+Current prototype slice: Jesus visibly leads each route leg; the HUD gives follow/catch-up guidance; reaching Him opens four externally-authored factual questions about Luke 10:25–37, each with immediate correct/incorrect feedback, followed by a final Journey 1 reflection. Incorrect answers deduct 15 Journey Strength without blocking progress. This is an interaction scaffold, not approved final religious copy or the complete Good Samaritan encounter.
 
-The road also includes optional bread and water provisions. Walking uses the fictional traveler's strength; collecting provisions restores it, and selected story choices can consume saved supplies in an act of care. Jesus does not have a rechargeable game-energy statistic.
+The road also includes optional bread and water provisions. Walking and incorrect Scripture answers use the fictional traveler's strength; collecting provisions restores it. Jesus does not have a rechargeable game-energy statistic.
 
 Approval checkpoint: review the provisional religious content and choice framing.
 

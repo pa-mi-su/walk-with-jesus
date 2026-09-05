@@ -1,12 +1,12 @@
 # Walk With Jesus
 
-Walk With Jesus is a planned peaceful Catholic educational game and companion experience to [Sanctuary](https://mydailysanctuary.com). Each level is a self-contained journey with Jesus centered on a moment from His earthly life and ministry—such as a teaching, encounter, miracle, or sacred event. The first playable journey explores Jesus' teaching of the Parable of the Good Samaritan through listening, practical choices, consequences, reflection, and a Scripture journal.
+Walk With Jesus is a planned peaceful Catholic educational game and companion experience to [Sanctuary](https://mydailysanctuary.com). Each level is a self-contained journey with Jesus centered on a moment from His earthly life and ministry—such as a teaching, encounter, miracle, or sacred event. The first playable journey explores Jesus' teaching of the Parable of the Good Samaritan through Scripture questions, immediate answer feedback, and a final reflection.
 
 The project will use Godot 4.7.2 and GDScript, with one offline-first codebase targeting desktop, iPhone, iPad, and Android.
 
 ## Project status
 
-Milestone 1 development. The project currently includes a responsive title screen, four-character traveler selection, and a guided, scrolling 2D isometric journey. Jesus leads the chosen traveler to five story stops: four interactive decisions with immediate reflection feedback and a final journey reflection. Along the way, the traveler can gather bread and water to restore travel strength or save those provisions for acts of mercy. Both characters have procedural walking cycles rather than sliding as static cutouts. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+Milestone 1 development. The project currently includes a responsive title screen, four-character traveler selection, and a guided, scrolling 2D isometric journey. Jesus leads the chosen traveler to five story stops: four factual questions drawn from Luke 10:25–37 and a final journey reflection. Correct answers preserve Journey Strength; incorrect answers explain the Scriptural event and deduct 15 strength. Along the way, the traveler can gather bread and water to restore strength. Both characters have procedural walking cycles rather than sliding as static cutouts. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 
 No production Sanctuary services, credentials, accounts, analytics, advertising, or purchases are connected.
 

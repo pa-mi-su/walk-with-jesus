@@ -23,7 +23,7 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] Entering the world first explains the objective and presents a clear “Follow Jesus” action.
 - [ ] Activating “Follow Jesus” makes Jesus set out before the player.
 - [ ] The HUD continually indicates that Jesus is leading and gives an approximate distance while traveling.
-- [ ] The introduction explains bread, water, traveler strength, and the option to save provisions for someone in need.
+- [ ] The introduction explains Scripture questions, the 15-strength wrong-answer penalty, and bread/water recovery.
 - [ ] Bread and water are clearly visible as optional glowing pickups without obscuring the road.
 - [ ] Walking gradually lowers the fictional traveler's strength and never creates an energy meter for Jesus.
 - [ ] Collecting bread or water increases its inventory count, restores strength, and gives immediate feedback.
@@ -39,9 +39,10 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] The traveler’s legs alternate and the body rises and falls while walking, then settles while idle.
 - [ ] Jesus’ legs alternate and the body rises and falls while He is leading, then settles while idle.
 - [ ] Catching up to Jesus at a stop automatically opens a story interaction.
-- [ ] Each of the first four stops offers two responses and displays an immediate consequence before continuing.
-- [ ] The water response at the wounded-traveler stop requires and consumes water; an alternative remains available without it.
-- [ ] The bread response at the mercy-in-action stop requires and consumes bread; an alternative remains available without it.
+- [ ] Each of the first four stops asks one factual question about the events of Luke 10:25–37 and offers two clear answers.
+- [ ] A correct answer is identified, explains the Scriptural event, and preserves Journey Strength.
+- [ ] An incorrect answer is identified, shows the correct Scriptural event, and deducts exactly 15 Journey Strength.
+- [ ] A wrong answer never blocks the player from continuing to follow Jesus.
 - [ ] The final stop presents a Journey 1 reflection and completion action.
 - [ ] Clicking the Title button does not also move the traveler.
 

@@ -7,86 +7,90 @@
   "intro": {
     "kicker": "JOURNEY 1 · LUKE 10",
     "title": "Walk with Jesus",
-    "body": "Jesus is traveling with His followers. Stay near Him as He leads you toward a teaching about love of neighbor and mercy. Gather bread and water to restore your travel strength, or save those provisions for someone in need.",
+    "body": "Follow Jesus along the road and listen to His teaching about the Good Samaritan. At each stop, answer a question about what happened in Scripture. A wrong answer costs 15 Journey Strength; bread and water restore it as you travel.",
     "action_label": "Follow Jesus  →"
   },
   "stops": [
     {
       "route_index": 1,
-      "kicker": "STORY STOP · A QUESTION",
-      "title": "A question on the road",
-      "body": "A scholar asks Jesus what it means to love your neighbor. Jesus turns the question into an invitation to listen and reflect.",
-      "prompt": "How will you enter this teaching?",
-      "reference": "Provisional summary inspired by Luke 10:25–29",
+      "kicker": "SCRIPTURE QUESTION · 1 OF 4",
+      "title": "The road in Jesus' story",
+      "body": "Jesus begins the parable with a traveler who is attacked by robbers and left badly wounded.",
+      "prompt": "Where was the traveler going?",
+      "reference": "Luke 10:30",
       "choices": [
         {
-          "label": "Listen closely",
-          "response": "You quiet your thoughts and give the teaching your full attention."
+          "label": "From Jerusalem to Jericho",
+          "correct": true,
+          "response": "Jesus says the traveler was going down from Jerusalem to Jericho."
         },
         {
-          "label": "Ask what love requires",
-          "response": "You begin listening for a form of love that becomes practical action."
+          "label": "From Bethlehem to Nazareth",
+          "correct": false,
+          "response": "The traveler was going down from Jerusalem to Jericho."
         }
       ],
       "action_label": "Continue with Jesus  →"
     },
     {
       "route_index": 2,
-      "kicker": "STORY STOP · THE ROAD",
-      "title": "Someone is suffering",
-      "body": "In the story Jesus tells, a traveler has been attacked and left wounded beside the road. The need is real, but stopping may feel costly or unsafe.",
-      "prompt": "What do you notice first?",
-      "reference": "Provisional summary inspired by Luke 10:30",
+      "kicker": "SCRIPTURE QUESTION · 2 OF 4",
+      "title": "Compassion on the road",
+      "body": "A priest and a Levite see the wounded man, but both pass by on the other side.",
+      "prompt": "Who stops and is moved with compassion?",
+      "reference": "Luke 10:31–33",
       "choices": [
         {
-          "label": "Offer water and draw near",
-          "response": "You use the water you carried to make compassion practical and immediate.",
-          "requires_item": "water",
-          "consume_item": true
+          "label": "The priest",
+          "correct": false,
+          "response": "The priest passes by. It is the Samaritan traveler who stops and shows compassion."
         },
         {
-          "label": "The danger around him",
-          "response": "You recognize the risk and consider how to help wisely without turning away."
+          "label": "A Samaritan traveler",
+          "correct": true,
+          "response": "The Samaritan traveler sees the wounded man, draws near, and is moved with compassion."
         }
       ],
       "action_label": "Follow Jesus onward  →"
     },
     {
       "route_index": 3,
-      "kicker": "STORY STOP · DRAW NEAR",
-      "title": "Mercy crosses the road",
-      "body": "Others see the wounded traveler and pass by. A Samaritan sees him, draws near, and responds with compassion.",
-      "prompt": "What would move you from concern to action?",
-      "reference": "Provisional summary inspired by Luke 10:31–33",
+      "kicker": "SCRIPTURE QUESTION · 3 OF 4",
+      "title": "The Samaritan gives care",
+      "body": "The Samaritan approaches the wounded man and begins caring for his injuries.",
+      "prompt": "What does the Samaritan pour over the man's wounds?",
+      "reference": "Luke 10:34",
       "choices": [
         {
-          "label": "Approach and help",
-          "response": "You choose presence first—drawing near enough to understand what is needed."
+          "label": "Oil and wine",
+          "correct": true,
+          "response": "The Samaritan pours oil and wine over the wounds and bandages them."
         },
         {
-          "label": "Bring others to help",
-          "response": "You choose not to walk away; you look for safe, practical help and remain involved."
+          "label": "Water and milk",
+          "correct": false,
+          "response": "The Samaritan uses oil and wine, then bandages the man's wounds."
         }
       ],
       "action_label": "Continue the journey  →"
     },
     {
       "route_index": 4,
-      "kicker": "STORY STOP · MERCY IN ACTION",
-      "title": "Care has a cost",
-      "body": "The Samaritan gives time, supplies, transportation, and continued care. Mercy becomes more than a feeling—it becomes a commitment.",
-      "prompt": "What can you offer when someone needs care?",
-      "reference": "Provisional summary inspired by Luke 10:34–35",
+      "kicker": "SCRIPTURE QUESTION · 4 OF 4",
+      "title": "Mercy continues",
+      "body": "The Samaritan lifts the wounded man onto his own animal and carries him somewhere safe.",
+      "prompt": "Where does the Samaritan take the wounded man?",
+      "reference": "Luke 10:34–35",
       "choices": [
         {
-          "label": "Share bread from my supplies",
-          "response": "The bread you carried becomes an ordinary resource offered with extraordinary mercy.",
-          "requires_item": "bread",
-          "consume_item": true
+          "label": "Back to Jerusalem",
+          "correct": false,
+          "response": "The Samaritan takes the wounded man to an inn and continues caring for him."
         },
         {
-          "label": "Stay and make a plan",
-          "response": "You choose patient responsibility rather than a hurried gesture."
+          "label": "To an inn",
+          "correct": true,
+          "response": "The Samaritan takes him to an inn, cares for him, and provides for his continued care."
         }
       ],
       "action_label": "Walk to the final stop  →"

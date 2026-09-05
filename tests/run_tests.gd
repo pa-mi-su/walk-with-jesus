@@ -10,6 +10,7 @@ func _initialize() -> void:
 func _run() -> void:
 	print("Running Walk With Jesus checks...")
 	_check_project_configuration()
+	_check_scripture_quiz_content()
 	await _check_main_flow()
 	await _check_player_movement()
 	await _check_complete_journey()
@@ -37,6 +38,25 @@ func _check_project_configuration() -> void:
 		ResourceLoader.exists("res://scenes/app/main.tscn"),
 		"main scene exists"
 	)
+
+
+func _check_scripture_quiz_content() -> void:
+	var raw_text := FileAccess.get_file_as_string("res://content/journeys/good_samaritan.json")
+	var journey: Variant = JSON.parse_string(raw_text)
+	_expect_true(journey is Dictionary, "Good Samaritan content is valid JSON")
+	if not journey is Dictionary:
+		return
+	var question_count := 0
+	for stop: Variant in journey.get("stops", []):
+		if not stop is Dictionary or bool(stop.get("completion", false)):
+			continue
+		question_count += 1
+		var correct_count := 0
+		for choice: Variant in stop.get("choices", []):
+			if choice is Dictionary and bool(choice.get("correct", false)):
+				correct_count += 1
+		_expect_equal(correct_count, 1, "Scripture question %d has exactly one correct answer" % question_count)
+	_expect_equal(question_count, 4, "Journey 1 contains four scored Scripture questions")
 
 
 func _check_main_flow() -> void:
@@ -111,8 +131,11 @@ func _check_main_flow() -> void:
 	await process_frame
 	_expect_equal(world.get_journey_phase(), "story", "catching Jesus opens an interactive story stop")
 	_expect_true(story_overlay.visible, "story interaction appears instead of leaving the player with nothing")
-	world.choose_story_response(0)
-	_expect_equal(world.get_journey_phase(), "story_response", "a choice produces an immediate consequence")
+	var strength_before_wrong_answer: float = world.get_traveler_strength()
+	world.choose_story_response(1)
+	_expect_equal(world.get_journey_phase(), "story_response", "an answer produces immediate Scripture feedback")
+	_expect_true(not world.was_last_answer_correct(), "the game identifies an incorrect Scripture answer")
+	_expect_equal(world.get_traveler_strength(), strength_before_wrong_answer - 15.0, "an incorrect answer costs 15 Journey Strength")
 	world.continue_story()
 	_expect_equal(world.get_journey_phase(), "leading", "the story choice continues into the next guided leg")
 	_expect_equal(guide.get_route_index(), 2, "Jesus resumes leading after the interaction")
@@ -163,34 +186,23 @@ func _check_complete_journey() -> void:
 	world.jesus_guide.walking_speed = 1800.0
 	world.start_journey()
 
+	var correct_answers := [0, 1, 0, 1]
 	for route_index in range(1, 6):
 		for _frame in range(90):
 			if world.get_journey_phase() == "catch_up":
 				break
 			await process_frame
 		_expect_equal(world.jesus_guide.get_route_index(), route_index, "Jesus reaches guided stop %d" % route_index)
-		if route_index == 2:
-			world.add_provision("water", 0.0)
-		elif route_index == 4:
-			world.add_provision("bread", 0.0)
 		world.player.stop()
 		world.player.position = world.jesus_guide.position + Vector2(40.0, 30.0)
 		await process_frame
 		if route_index < 5:
-			_expect_equal(world.get_journey_phase(), "story", "stop %d opens a choice" % route_index)
-			var choice_index := 1
-			if route_index == 2:
-				choice_index = 0
-				_expect_true(not world.story_overlay.choice_one.disabled, "collected water unlocks the offer-water response")
-			elif route_index == 4:
-				choice_index = 0
-				_expect_true(not world.story_overlay.choice_one.disabled, "collected bread unlocks the share-bread response")
-			world.choose_story_response(choice_index)
-			_expect_equal(world.get_journey_phase(), "story_response", "stop %d responds to the choice" % route_index)
-			if route_index == 2:
-				_expect_equal(world.get_provision_count("water"), 0, "offering water consumes one collected flask")
-			elif route_index == 4:
-				_expect_equal(world.get_provision_count("bread"), 0, "sharing bread consumes one collected loaf")
+			_expect_equal(world.get_journey_phase(), "story", "stop %d opens a Scripture question" % route_index)
+			var strength_before_answer: float = world.get_traveler_strength()
+			world.choose_story_response(correct_answers[route_index - 1])
+			_expect_equal(world.get_journey_phase(), "story_response", "stop %d responds to the answer" % route_index)
+			_expect_true(world.was_last_answer_correct(), "stop %d recognizes the correct Scripture answer" % route_index)
+			_expect_equal(world.get_traveler_strength(), strength_before_answer, "a correct answer preserves Journey Strength")
 			world.continue_story()
 		else:
 			_expect_equal(world.get_journey_phase(), "reflection", "the final stop opens the journey reflection")

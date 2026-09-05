@@ -40,7 +40,7 @@ func _capture() -> void:
 	_save_viewport("journey-progress-1280x720.png")
 	await _advance_to_story_stop(desktop_world)
 	_save_viewport("story-stop-1280x720.png")
-	desktop_world.choose_story_response(0)
+	desktop_world.choose_story_response(1)
 	await _wait_for_render()
 	_save_viewport("story-response-1280x720.png")
 
