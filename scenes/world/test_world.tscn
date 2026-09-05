@@ -64,6 +64,7 @@ texture = ExtResource("3_background")
 [node name="JourneyCamera" type="Camera2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(1450, 1145)
+enabled = false
 position_smoothing_enabled = true
 position_smoothing_speed = 4.5
 limit_left = 0

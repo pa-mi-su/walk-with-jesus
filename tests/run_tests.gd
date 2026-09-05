@@ -52,6 +52,7 @@ func _check_main_flow() -> void:
 	var character_selection := main.get_node("CharacterSelection") as CharacterSelection
 	var world := main.get_node("TestWorld") as Node2D
 	var world_interface := world.get_node("Interface") as CanvasLayer
+	var journey_camera := world.get_node("JourneyCamera") as Camera2D
 	_expect_true(title_screen.visible, "title screen is initially visible")
 	_expect_equal(
 		title_screen.find_children("*", "Button", true, false).size(),
@@ -61,12 +62,14 @@ func _check_main_flow() -> void:
 	_expect_true(not character_selection.visible, "character selection is initially hidden")
 	_expect_true(not world.visible, "test world is initially hidden")
 	_expect_true(not world_interface.visible, "world interface does not leak onto the title screen")
+	_expect_true(not journey_camera.enabled, "world camera cannot move the title screen")
 
 	title_screen.start_requested.emit()
 	await process_frame
 	_expect_true(not title_screen.visible, "starting hides the title screen")
 	_expect_true(character_selection.visible, "starting reveals character selection")
 	_expect_true(not world.visible, "world waits for a character choice")
+	_expect_true(not journey_camera.enabled, "world camera cannot move character selection off-screen")
 	_expect_equal(character_selection.get_character_count(), 4, "four fictional travelers are available")
 
 	character_selection.select_character_by_index(1)
@@ -78,6 +81,7 @@ func _check_main_flow() -> void:
 	_expect_true(not character_selection.visible, "confirming hides character selection")
 	_expect_true(world.visible, "confirming reveals the test world")
 	_expect_true(world_interface.visible, "confirming reveals the world interface")
+	_expect_true(journey_camera.enabled, "world camera activates only after the journey begins")
 	var player := world.get_node("WorldContent/Player") as TravelerPlayer
 	var guide := world.get_node("WorldContent/JesusGuide") as JesusGuide
 	_expect_true(guide != null, "Jesus is present as a separate guide")

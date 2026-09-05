@@ -27,6 +27,7 @@ func _process(delta: float) -> void:
 
 func _ready() -> void:
 	_build_navigation_area()
+	journey_camera.enabled = false
 	back_button.pressed.connect(func() -> void: return_to_title_requested.emit())
 	player.destination_reached.connect(_on_destination_reached)
 	jesus_guide.route_completed.connect(_on_guide_route_completed)
@@ -40,6 +41,7 @@ func _ready() -> void:
 
 func begin_session() -> void:
 	_session_active = true
+	journey_camera.enabled = true
 	interface.visible = true
 	player.position = Vector2(1450.0, 1145.0)
 	player.stop()
@@ -61,6 +63,7 @@ func set_player_character(character: Dictionary) -> void:
 
 func end_session() -> void:
 	_session_active = false
+	journey_camera.enabled = false
 	interface.visible = false
 	player.stop()
 	jesus_guide.stop_guiding()
