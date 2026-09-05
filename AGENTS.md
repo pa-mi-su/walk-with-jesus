@@ -2,7 +2,7 @@
 
 ## Project intent
 
-Walk With Jesus is a peaceful, offline-first Catholic educational game and a companion experience to Sanctuary. The first playable story is the Parable of the Good Samaritan. The player controls a fictional disciple or traveler; the player never directly controls Jesus.
+Walk With Jesus is a peaceful, offline-first Catholic educational game and a companion experience to Sanctuary. Every level is a distinct journey with Jesus centered on a moment from His earthly life and ministry: a teaching, encounter, miracle, journey, Passion event, or Resurrection event. The first playable journey is Jesus' teaching of the Parable of the Good Samaritan. The player controls a fictional disciple or traveler; the player never directly controls Jesus.
 
 At the start of a new journey, the player chooses one explicitly fictional traveler. That selected person is the player-controlled character throughout the story. Jesus is a non-player guide whom the traveler follows through the environment and teaching encounters.
 
@@ -61,7 +61,8 @@ For behavior that is awkward to automate—touch movement, responsive layout, vi
 - Use typed GDScript where it improves clarity and catches mistakes.
 - Keep scenes focused and reusable. Prefer composition and signals over deep inheritance trees.
 - Keep gameplay logic independent from UI nodes where practical so it can be tested headlessly.
-- Treat story content as data. Dialogue, prompts, choices, outcomes, explanations, virtue changes, and Scripture references belong under `content/`, not scattered through scripts.
+- Treat journey content as data. Journey metadata, dialogue, prompts, choices, outcomes, explanations, virtue changes, and Scripture references belong under `content/`, not scattered through scripts.
+- Model each level as one versioned journey with a stable ID, Gospel reference, chronological or thematic placement, estimated duration, content-review status, and an ordered series of scenes. A journey should make clear what Jesus is teaching or doing.
 - Give every story, scene beat, choice, journal entry, and save schema a stable identifier. Never use display text as an identifier.
 - Parse and validate content at load time. Fail with a specific content path and field name.
 - Route local persistence through one save service. Version the save schema and write saves atomically.

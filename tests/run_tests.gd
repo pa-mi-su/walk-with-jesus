@@ -53,6 +53,11 @@ func _check_main_flow() -> void:
 	var world := main.get_node("TestWorld") as Node2D
 	var world_interface := world.get_node("Interface") as CanvasLayer
 	_expect_true(title_screen.visible, "title screen is initially visible")
+	_expect_equal(
+		title_screen.find_children("*", "Button", true, false).size(),
+		1,
+		"title screen has one unambiguous journey-start action"
+	)
 	_expect_true(not character_selection.visible, "character selection is initially hidden")
 	_expect_true(not world.visible, "test world is initially hidden")
 	_expect_true(not world_interface.visible, "world interface does not leak onto the title screen")

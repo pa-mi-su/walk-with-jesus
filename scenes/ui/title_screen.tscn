@@ -156,16 +156,6 @@ text = "Prayer, peace, and daily devotion"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Section" type="PanelContainer" parent="SafeMargin/Page/Nav/NavContent"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
-
-[node name="Label" type="Label" parent="SafeMargin/Page/Nav/NavContent/Section"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 0.97, 1)
-theme_override_font_sizes/font_size = 15
-text = "✦  WALK WITH JESUS"
-
 [node name="HeroCenter" type="CenterContainer" parent="SafeMargin/Page"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -203,14 +193,14 @@ text = "Walk With Jesus"
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
 theme_override_font_sizes/font_size = 25
-text = "A peaceful journey through the Gospel"
+text = "Journey through the life of Jesus"
 
 [node name="Description" type="Label" parent="SafeMargin/Page/HeroCenter/HeroPanel/HeroColumns/Copy"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.82, 0.89, 0.92, 1)
 theme_override_font_sizes/font_size = 18
-text = "Walk the road. Hear the Word. Make choices shaped by charity and mercy."
+text = "Follow Jesus through His teachings, encounters, miracles, Passion, and Resurrection."
 autowrap_mode = 2
 vertical_alignment = 1
 
@@ -222,7 +212,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 0.97, 1)
 theme_override_font_sizes/font_size = 15
-text = "FIRST JOURNEY  ·  THE GOOD SAMARITAN  ·  LUKE 10:25–37"
+text = "JOURNEY 1  ·  JESUS TEACHES ABOUT MERCY  ·  LUKE 10:25–37"
 horizontal_alignment = 1
 
 [node name="JourneyCard" type="PanelContainer" parent="SafeMargin/Page/HeroCenter/HeroPanel/HeroColumns"]
@@ -246,13 +236,13 @@ stretch_mode = 6
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.99, 1, 1)
 theme_override_font_sizes/font_size = 23
-text = "The road to Jericho"
+text = "Jesus teaches the Good Samaritan"
 
 [node name="CardDetail" type="Label" parent="SafeMargin/Page/HeroCenter/HeroPanel/HeroColumns/JourneyCard/CardContent"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.8, 0.84, 1)
 theme_override_font_sizes/font_size = 15
-text = "Good Samaritan · About 10 minutes"
+text = "Teaching and mercy · About 10 minutes"
 
 [node name="StartButton" type="Button" parent="SafeMargin/Page/HeroCenter/HeroPanel/HeroColumns/JourneyCard/CardContent"]
 unique_name_in_owner = true

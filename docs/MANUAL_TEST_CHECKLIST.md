@@ -10,6 +10,8 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] The title reads “Walk With Jesus.”
 - [ ] “A Sanctuary Experience” is clearly visible.
 - [ ] “Begin the Journey” is reachable by mouse and keyboard focus.
+- [ ] The title screen presents exactly one control that looks like a start action.
+- [ ] The featured card clearly states what Jesus is doing or teaching in this journey.
 - [ ] Activating the button opens character selection before the movement environment.
 - [ ] Four fictional travelers are visible and selectable; Jesus is not a selectable character.
 - [ ] Continue remains disabled until a traveler is chosen, then names the chosen traveler.
