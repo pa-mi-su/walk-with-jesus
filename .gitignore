@@ -1,0 +1,35 @@
+# Godot-generated files
+.godot/
+*.translation
+
+# Build and export output
+build/
+dist/
+exports/
+*.apk
+*.aab
+*.ipa
+
+# Local export credentials and signing materials
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.cer
+*.provisionprofile
+export_credentials.cfg
+
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.tmp
+
+# Logs and test output
+*.log
+test-results/
+coverage/
