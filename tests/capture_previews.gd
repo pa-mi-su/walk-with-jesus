@@ -32,13 +32,21 @@ func _capture() -> void:
 	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
 	_save_viewport("journey-intro-1280x720.png")
-	main.get_node("TestWorld").start_journey()
+	var desktop_world := main.get_node("TestWorld")
+	desktop_world.encounter_time_scale = 0.3
+	desktop_world.start_journey()
+	await create_timer(0.55).timeout
+	await _wait_for_render()
+	_save_viewport("bread-theft-approach-1280x720.png")
+	await _wait_for_phase(desktop_world, "opening_taken", 300)
+	await _wait_for_render()
+	_save_viewport("bread-theft-taken-1280x720.png")
+	await _wait_for_phase(desktop_world, "opening_event", 300)
 	await _wait_for_render()
 	_save_viewport("bread-theft-1280x720.png")
-	main.get_node("TestWorld").continue_story()
+	desktop_world.continue_story()
 	await _wait_for_render()
 	_save_viewport("movement-1280x720.png")
-	var desktop_world := main.get_node("TestWorld")
 	desktop_world._set_walk_target(desktop_world.player.position + Vector2(-360.0, -300.0))
 	for _frame in range(70):
 		await physics_frame
@@ -80,13 +88,15 @@ func _capture() -> void:
 	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
 	_save_viewport("journey-intro-844x390.png")
-	main.get_node("TestWorld").start_journey()
+	var phone_world := main.get_node("TestWorld")
+	phone_world.encounter_time_scale = 0.06
+	phone_world.start_journey()
+	await _wait_for_phase(phone_world, "opening_event", 300)
 	await _wait_for_render()
 	_save_viewport("bread-theft-844x390.png")
-	main.get_node("TestWorld").continue_story()
+	phone_world.continue_story()
 	await _wait_for_render()
 	_save_viewport("movement-844x390.png")
-	var phone_world := main.get_node("TestWorld")
 	phone_world._set_walk_target(phone_world.player.position + Vector2(-300.0, -250.0))
 	for _frame in range(60):
 		await physics_frame
@@ -140,7 +150,11 @@ func _finish_journey(world: Node) -> void:
 				break
 			await physics_frame
 		world.player.stop()
-		world.player.position = world.jesus_guide.position + Vector2(40.0, 30.0)
+		world.player.position = (
+			world.desperate_traveler.position + Vector2(40.0, 30.0)
+			if route_index == 5
+			else world.jesus_guide.position + Vector2(40.0, 30.0)
+		)
 		await physics_frame
 		await _wait_for_render()
 		if route_index <= 4:
@@ -148,8 +162,20 @@ func _finish_journey(world: Node) -> void:
 			await _wait_for_render()
 			world.continue_story()
 		elif route_index == 5:
+			await _wait_for_phase(world, "mercy_scene", 120)
+			for _frame in range(20):
+				await process_frame
+			await _wait_for_render()
+			_save_viewport("mercy-arrival-1280x720.png")
+			await _wait_for_phase(world, "story", 300)
 			_save_viewport("mercy-encounter-1280x720.png")
 			world.choose_story_response(0)
+			await _wait_for_phase(world, "mercy_action", 120)
+			for _frame in range(10):
+				await process_frame
+			await _wait_for_render()
+			_save_viewport("mercy-action-1280x720.png")
+			await _wait_for_phase(world, "story_response", 300)
 			await _wait_for_render()
 			world.continue_story()
 		else:
@@ -181,6 +207,13 @@ func _complete_storm_tasks(world: StormWorld) -> void:
 	for task: Node in get_nodes_in_group("storm_tasks"):
 		if world.is_ancestor_of(task) and not task.is_queued_for_deletion():
 			task._on_body_entered(world.player)
+
+
+func _wait_for_phase(world: Node, expected_phase: String, max_frames: int) -> void:
+	for _frame in range(max_frames):
+		if world.get_journey_phase() == expected_phase:
+			return
+		await process_frame
 
 
 func _save_viewport(file_name: String) -> void:

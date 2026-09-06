@@ -46,7 +46,9 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] An incorrect answer is identified, shows the correct Scriptural event, and deducts exactly 15 Journey Strength.
 - [ ] A wrong answer never blocks the player from continuing to follow Jesus.
 - [ ] Journey 1 begins with a clearly labeled fictional encounter in which the same desperate traveler shown later takes the initial bread.
+- [ ] The theft plays in the world at a readable pace: approach, reach, bread-count change, and escape are visible before the summary card.
 - [ ] The later encounter lets the player forgive and help or leave; the choice changes whether the Mercy Seal is earned.
+- [ ] The later encounter holds on the visible traveler before the choice card, then plays the chosen response in the world before feedback.
 - [ ] The final stop presents a Journey 1 reflection and completion action.
 - [ ] Completing the reflection opens a visible results card with a Mercy Seal, Scripture score, remaining strength, and provisions found.
 - [ ] The results card has a clear action leading back to journey selection.

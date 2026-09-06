@@ -137,10 +137,15 @@ func _check_main_flow() -> void:
 	_expect_true(story_overlay.visible, "the player is explicitly invited to follow Jesus")
 
 	guide.walking_speed = 1000.0
+	world.encounter_time_scale = 0.01
 	world.start_journey()
-	_expect_equal(world.get_journey_phase(), "opening_event", "Journey 1 opens with the bread theft")
-	_expect_true(world.desperate_traveler.visible, "the same desperate traveler appears during the theft")
+	_expect_equal(world.get_journey_phase(), "opening_approach", "Journey 1 starts with the traveler approaching in real time")
+	_expect_true(world.desperate_traveler.visible, "the desperate traveler is visible during the approach")
+	_expect_equal(world.get_provision_count("bread"), 1, "bread remains until the traveler reaches the satchel")
+	await _wait_for_journey_phase(world, "opening_taken")
 	_expect_equal(world.get_provision_count("bread"), 0, "the opening theft removes the traveler's bread")
+	_expect_true(world.desperate_action_label.visible, "the theft is identified visibly in the world")
+	await _wait_for_journey_phase(world, "opening_event")
 	world.continue_story()
 	_expect_equal(world.get_journey_phase(), "leading", "accepting the invitation starts the guided journey")
 	_expect_equal(guide.get_route_index(), 1, "Jesus leads toward the first story stop")
@@ -180,6 +185,7 @@ func _check_player_movement() -> void:
 	var world := world_scene.instantiate()
 	root.add_child(world)
 	world.begin_session()
+	world.encounter_time_scale = 0.01
 	var hidden_caches: Array[Node] = []
 	for collectible: Node in get_nodes_in_group("journey_collectibles"):
 		if world.is_ancestor_of(collectible):
@@ -187,6 +193,7 @@ func _check_player_movement() -> void:
 	_expect_equal(hidden_caches.size(), 4, "the road has four scarce provision caches")
 	_expect_true(not hidden_caches[0].is_revealed(), "roadside provisions begin hidden")
 	world.start_journey()
+	await _wait_for_journey_phase(world, "opening_event")
 	world.continue_story()
 	await physics_frame
 	await physics_frame
@@ -243,8 +250,10 @@ func _check_complete_journey() -> void:
 	var world := world_scene.instantiate()
 	root.add_child(world)
 	world.begin_session()
+	world.encounter_time_scale = 0.01
 	world.jesus_guide.walking_speed = 1800.0
 	world.start_journey()
+	await _wait_for_journey_phase(world, "opening_event")
 	world.continue_story()
 
 	var correct_answers := [0, 1, 0, 1]
@@ -255,8 +264,16 @@ func _check_complete_journey() -> void:
 			await process_frame
 		_expect_equal(world.jesus_guide.get_route_index(), route_index, "Jesus reaches guided stop %d" % route_index)
 		world.player.stop()
-		world.player.position = world.jesus_guide.position + Vector2(40.0, 30.0)
+		world.player.position = (
+			world.desperate_traveler.position + Vector2(40.0, 30.0)
+			if route_index == 5
+			else world.jesus_guide.position + Vector2(40.0, 30.0)
+		)
 		await process_frame
+		if route_index == 5:
+			_expect_equal(world.get_journey_phase(), "mercy_scene", "the return encounter remains visible before the choice appears")
+			_expect_true(not world.story_overlay.visible, "the decision card waits while the player sees the traveler")
+			await _wait_for_journey_phase(world, "story")
 		if route_index <= 4:
 			_expect_equal(world.get_journey_phase(), "story", "stop %d opens a Scripture question" % route_index)
 			var strength_before_answer: float = world.get_traveler_strength()
@@ -269,6 +286,8 @@ func _check_complete_journey() -> void:
 			_expect_equal(world.get_journey_phase(), "story", "the desperate traveler returns for a lived mercy choice")
 			_expect_true(world.desperate_traveler.visible, "the recurring traveler is visible at the later encounter")
 			world.choose_story_response(0)
+			_expect_equal(world.get_journey_phase(), "mercy_action", "the chosen mercy response plays visibly in the world")
+			await _wait_for_journey_phase(world, "story_response")
 			_expect_true(world.was_last_answer_correct(), "forgiving and helping records mercy in action")
 			world.continue_story()
 		else:
@@ -353,6 +372,13 @@ func _complete_storm_tasks(world: StormWorld) -> void:
 	_expect_equal(tasks.size(), 3, "the current storm action has three deck tasks")
 	for task: Node in tasks:
 		task._on_body_entered(world.player)
+
+
+func _wait_for_journey_phase(world: Node, expected_phase: String, max_frames := 180) -> void:
+	for _frame in range(max_frames):
+		if world.get_journey_phase() == expected_phase:
+			return
+		await process_frame
 
 
 func _expect_true(condition: bool, description: String) -> void:

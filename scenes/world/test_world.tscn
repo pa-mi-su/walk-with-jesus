@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/test_world.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2_player"]
@@ -7,6 +7,11 @@
 [ext_resource type="PackedScene" path="res://scenes/characters/jesus_guide.tscn" id="5_guide"]
 [ext_resource type="PackedScene" path="res://scenes/ui/story_overlay.tscn" id="6_story_overlay"]
 [ext_resource type="Texture2D" path="res://assets/generated/desperate-traveler.png" id="7_desperate"]
+[ext_resource type="Shader" path="res://assets/shaders/walking_cycle.gdshader" id="8_walk_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_desperate_walk"]
+resource_local_to_scene = true
+shader = ExtResource("8_walk_shader")
 
 [sub_resource type="SystemFont" id="SystemFont_brand"]
 font_names = PackedStringArray("Avenir Next", "SF Pro Display", "Segoe UI", "Arial")
@@ -109,6 +114,7 @@ z_index = 8
 
 [node name="Sprite2D" type="Sprite2D" parent="WorldContent/DesperateTraveler"]
 position = Vector2(0, -92)
+material = SubResource("ShaderMaterial_desperate_walk")
 texture = ExtResource("7_desperate")
 scale = Vector2(0.12, 0.12)
 
@@ -124,6 +130,21 @@ theme_override_fonts/font = SubResource("SystemFont_character")
 theme_override_font_sizes/font_size = 14
 text = "TRAVELER"
 horizontal_alignment = 1
+
+[node name="ActionLabel" type="Label" parent="WorldContent/DesperateTraveler"]
+unique_name_in_owner = true
+offset_left = -125.0
+offset_top = -202.0
+offset_right = 125.0
+offset_bottom = -160.0
+theme_override_colors/font_color = Color(1, 0.89, 0.5, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.07, 0.09, 0.98)
+theme_override_constants/outline_size = 7
+theme_override_fonts/font = SubResource("SystemFont_character")
+theme_override_font_sizes/font_size = 17
+text = "A TRAVELER APPROACHES"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="DestinationMarker" type="Node2D" parent="WorldContent"]
 z_index = 5

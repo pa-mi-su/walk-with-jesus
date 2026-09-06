@@ -30,6 +30,8 @@ const COLLECTIBLE_LAYOUT := [
 @onready var destination_marker: Node2D = $WorldContent/DestinationMarker
 @onready var story_overlay: StoryOverlay = $StoryOverlay
 @onready var desperate_traveler: Node2D = %DesperateTraveler
+@onready var desperate_sprite: Sprite2D = $WorldContent/DesperateTraveler/Sprite2D
+@onready var desperate_action_label: Label = %ActionLabel
 @onready var provisions_label: Label = %ProvisionsLabel
 @onready var strength_bar: ProgressBar = %StrengthBar
 @onready var pickup_toast: Label = %PickupToast
@@ -44,12 +46,25 @@ var _last_answer_correct := false
 var _correct_answer_count := 0
 var _mercy_shown := false
 var _pickup_tween: Tween
+var _encounter_tween: Tween
+var _desperate_is_walking := false
+var _desperate_walk_phase := 0.0
+var _desperate_walk_amount := 0.0
+
+# Kept at 1.0 in the game. Automated checks can shorten only the waits.
+var encounter_time_scale := 1.0
 
 
 func _process(delta: float) -> void:
 	if not _session_active:
 		return
-	var lead_position := player.position.lerp(jesus_guide.position, 0.28)
+	_update_desperate_animation(delta)
+	var mercy_close_up := _is_mercy_stop() and _journey_phase in ["mercy_scene", "story", "mercy_action", "story_response"]
+	var lead_position := (
+		player.position.lerp(desperate_traveler.position, 0.52)
+		if mercy_close_up
+		else player.position.lerp(jesus_guide.position, 0.28)
+	)
 	journey_camera.position = journey_camera.position.lerp(lead_position, 1.0 - exp(-delta * 5.0))
 	if _journey_phase in ["leading", "catch_up"] and player.velocity.length_squared() > 0.01:
 		_set_traveler_strength(_traveler_strength - STRENGTH_DRAIN_PER_SECOND * delta)
@@ -57,7 +72,8 @@ func _process(delta: float) -> void:
 		_update_follow_distance("Jesus is leading")
 	elif _journey_phase == "catch_up":
 		_update_follow_distance("Jesus has stopped ahead")
-		if player.global_position.distance_to(jesus_guide.global_position) <= INTERACTION_DISTANCE:
+		var encounter_target: Node2D = desperate_traveler if _is_mercy_stop() else jesus_guide
+		if player.global_position.distance_to(encounter_target.global_position) <= INTERACTION_DISTANCE:
 			_open_current_story_stop()
 
 
@@ -86,6 +102,7 @@ func begin_session() -> void:
 	player.stop()
 	jesus_guide.reset_with_follower(player)
 	journey_camera.position = player.position.lerp(jesus_guide.position, 0.28)
+	journey_camera.zoom = Vector2.ONE
 	journey_camera.reset_smoothing()
 	journey_hint.text = "Your journey is about to begin"
 	instruction_label.text = "Listen for your next step"
@@ -94,6 +111,7 @@ func begin_session() -> void:
 	_spawn_collectibles()
 	destination_marker.visible = false
 	desperate_traveler.visible = false
+	desperate_action_label.visible = false
 	_journey_phase = "intro"
 	story_overlay.show_intro(_journey_data.get("intro", {}))
 	queue_redraw()
@@ -117,6 +135,10 @@ func end_session() -> void:
 	_journey_phase = "inactive"
 	_clear_collectibles()
 	destination_marker.visible = false
+	if _encounter_tween != null and _encounter_tween.is_valid():
+		_encounter_tween.kill()
+	_desperate_is_walking = false
+	desperate_traveler.visible = false
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -150,7 +172,7 @@ func _on_destination_reached() -> void:
 func start_journey() -> void:
 	if _journey_phase != "intro":
 		return
-	_trigger_opening_event()
+	_begin_opening_encounter()
 
 
 func get_journey_phase() -> String:
@@ -197,7 +219,6 @@ func _on_story_primary_pressed() -> void:
 		start_journey()
 	elif _journey_phase == "opening_event":
 		story_overlay.close()
-		_flee_from_opening_event()
 		_lead_to_next_stop()
 	elif _journey_phase == "story_response":
 		story_overlay.close()
@@ -233,6 +254,8 @@ func _on_story_choice_selected(index: int) -> void:
 		feedback_heading = "MERCY IN ACTION" if _mercy_shown else "MERCY OPPORTUNITY MISSED"
 		if _mercy_shown:
 			_consume_shared_provision()
+		_play_mercy_response(choice, feedback_heading)
+		return
 	else:
 		_last_answer_correct = bool(choice.get("correct", false))
 		if _last_answer_correct:
@@ -264,11 +287,15 @@ func _on_guide_stop_reached(route_index: int) -> void:
 		return
 	_journey_phase = "catch_up"
 	if str(_current_stop.get("interaction_type", "")) == "mercy_choice":
-		desperate_traveler.position = jesus_guide.position + Vector2(-82.0, 40.0)
-		desperate_traveler.rotation = -0.08
+		desperate_traveler.position = jesus_guide.position + Vector2(95.0, 30.0)
+		desperate_traveler.rotation = 0.0
+		desperate_traveler.modulate = Color.WHITE
 		desperate_traveler.visible = true
+		_set_desperate_label_below(true)
+		desperate_action_label.text = "SOMEONE IS BESIDE THE ROAD"
+		desperate_action_label.visible = true
 	jesus_guide.set_guidance_cue("CATCH UP\n↓")
-	instruction_label.text = "Catch up to Jesus"
+	instruction_label.text = "Approach the traveler beside Jesus" if _is_mercy_stop() else "Catch up to Jesus"
 	_update_follow_distance("Jesus has stopped ahead")
 
 
@@ -277,6 +304,9 @@ func _open_current_story_stop() -> void:
 	jesus_guide.set_guidance_cue("")
 	destination_marker.visible = false
 	_hide_pickup_feedback()
+	if _is_mercy_stop():
+		_begin_mercy_scene()
+		return
 	if bool(_current_stop.get("completion", false)):
 		_journey_phase = "reflection"
 		instruction_label.text = "Journey reflection"
@@ -324,22 +354,153 @@ func _reset_journey_resources() -> void:
 	_update_resource_hud()
 
 
-func _trigger_opening_event() -> void:
-	_journey_phase = "opening_event"
-	desperate_traveler.position = player.position + Vector2(-105.0, -18.0)
+func _begin_opening_encounter() -> void:
+	story_overlay.close()
+	player.stop()
+	_journey_phase = "opening_approach"
+	desperate_traveler.position = player.position + Vector2(330.0, -155.0)
 	desperate_traveler.rotation = 0.0
-	desperate_traveler.modulate.a = 1.0
+	desperate_traveler.modulate = Color.WHITE
 	desperate_traveler.visible = true
+	_set_desperate_label_below(false)
+	desperate_action_label.text = "A TRAVELER APPROACHES…"
+	desperate_action_label.visible = true
+	instruction_label.text = "Someone is approaching on the road"
+	journey_hint.text = "WATCH WHAT HAPPENS"
+	_desperate_is_walking = true
+	_encounter_tween = create_tween()
+	_encounter_tween.set_trans(Tween.TRANS_SINE)
+	_encounter_tween.set_ease(Tween.EASE_IN_OUT)
+	_encounter_tween.tween_property(
+		desperate_traveler,
+		"position",
+		player.position + Vector2(58.0, -6.0),
+		_scaled_encounter_time(3.2)
+	)
+	await _encounter_tween.finished
+	if _journey_phase != "opening_approach":
+		return
+	_desperate_is_walking = false
+	_journey_phase = "opening_reach"
+	desperate_action_label.text = "HE REACHES FOR YOUR SATCHEL"
+	instruction_label.text = "The desperate traveler reaches toward your supplies"
+	await get_tree().create_timer(_scaled_encounter_time(1.6)).timeout
+	if _journey_phase != "opening_reach":
+		return
+	_journey_phase = "opening_taken"
 	_provisions["bread"] = maxi(0, get_provision_count("bread") - 1)
 	_update_resource_hud()
+	desperate_action_label.text = "BREAD TAKEN  ·  1 → 0"
+	instruction_label.text = "Your bread has been taken"
+	journey_hint.text = "REMEMBER HIS FACE"
+	_show_pickup_feedback("Bread taken from your satchel")
+	await get_tree().create_timer(_scaled_encounter_time(2.2)).timeout
+	if _journey_phase != "opening_taken":
+		return
+	_journey_phase = "opening_escape"
+	desperate_action_label.text = "THE TRAVELER FLEES DOWN THE ROAD"
+	_desperate_is_walking = true
+	_encounter_tween = create_tween().set_parallel(true)
+	_encounter_tween.set_trans(Tween.TRANS_SINE)
+	_encounter_tween.set_ease(Tween.EASE_IN)
+	_encounter_tween.tween_property(
+		desperate_traveler,
+		"position",
+		player.position + Vector2(-390.0, -315.0),
+		_scaled_encounter_time(2.6)
+	)
+	_encounter_tween.tween_property(desperate_traveler, "modulate:a", 0.2, _scaled_encounter_time(2.6))
+	await _encounter_tween.finished
+	if _journey_phase != "opening_escape":
+		return
+	_desperate_is_walking = false
+	desperate_traveler.visible = false
+	_journey_phase = "opening_event"
 	story_overlay.show_narrative_event(_journey_data.get("opening_event", {}))
 
 
-func _flee_from_opening_event() -> void:
-	var flee_tween := create_tween().set_parallel(true)
-	flee_tween.tween_property(desperate_traveler, "position", desperate_traveler.position + Vector2(-170.0, -120.0), 0.8)
-	flee_tween.tween_property(desperate_traveler, "modulate:a", 0.0, 0.8)
-	flee_tween.chain().tween_callback(func() -> void: desperate_traveler.visible = false)
+func _begin_mercy_scene() -> void:
+	_journey_phase = "mercy_scene"
+	player.stop()
+	desperate_action_label.text = "THE SAME TRAVELER  ·  WEAK AND HUNGRY"
+	desperate_action_label.visible = true
+	instruction_label.text = "It is the traveler who took your bread"
+	journey_hint.text = "WHAT WILL YOU DO?"
+	var start_position := desperate_traveler.position
+	_encounter_tween = create_tween()
+	_encounter_tween.set_trans(Tween.TRANS_SINE)
+	_encounter_tween.set_ease(Tween.EASE_IN_OUT)
+	_encounter_tween.tween_property(desperate_traveler, "position", start_position + Vector2(0.0, 7.0), _scaled_encounter_time(0.8))
+	_encounter_tween.tween_property(desperate_traveler, "position", start_position, _scaled_encounter_time(0.8))
+	await _encounter_tween.finished
+	if _journey_phase != "mercy_scene":
+		return
+	await get_tree().create_timer(_scaled_encounter_time(2.4)).timeout
+	if _journey_phase != "mercy_scene":
+		return
+	_journey_phase = "story"
+	instruction_label.text = "Choose how you will respond"
+	journey_hint.text = "MERCY IS MORE THAN AN ANSWER"
+	story_overlay.show_story_stop(_current_stop)
+
+
+func _play_mercy_response(choice: Dictionary, feedback_heading: String) -> void:
+	_journey_phase = "mercy_action"
+	story_overlay.close()
+	player.stop()
+	if _mercy_shown:
+		desperate_action_label.text = "YOU FORGIVE HIM AND STOP TO HELP"
+		instruction_label.text = "You put the teaching into action"
+		journey_hint.text = "MERCY IN ACTION"
+		_encounter_tween = create_tween()
+		_encounter_tween.set_trans(Tween.TRANS_SINE)
+		_encounter_tween.set_ease(Tween.EASE_OUT)
+		_encounter_tween.tween_property(desperate_traveler, "position:y", desperate_traveler.position.y - 24.0, _scaled_encounter_time(2.0))
+		await _encounter_tween.finished
+	else:
+		desperate_action_label.text = "YOU RECOVER THE SATCHEL AND TURN AWAY"
+		instruction_label.text = "The traveler remains beside the road"
+		journey_hint.text = "A MERCY OPPORTUNITY REMAINS"
+		await get_tree().create_timer(_scaled_encounter_time(2.8)).timeout
+	if _journey_phase != "mercy_action":
+		return
+	_journey_phase = "story_response"
+	story_overlay.show_choice_response(
+		str(choice.get("response", "")),
+		str(_current_stop.get("action_label", "Continue with Jesus  →")),
+		_last_answer_correct,
+		feedback_heading
+	)
+
+
+func _is_mercy_stop() -> bool:
+	return str(_current_stop.get("interaction_type", "")) == "mercy_choice"
+
+
+func _set_desperate_label_below(use_below_position: bool) -> void:
+	desperate_action_label.offset_left = -180.0 if use_below_position else -125.0
+	desperate_action_label.offset_right = 180.0 if use_below_position else 125.0
+	desperate_action_label.offset_top = 48.0 if use_below_position else -202.0
+	desperate_action_label.offset_bottom = 90.0 if use_below_position else -160.0
+
+
+func _scaled_encounter_time(seconds: float) -> float:
+	return maxf(seconds * encounter_time_scale, 0.02)
+
+
+func _update_desperate_animation(delta: float) -> void:
+	if not desperate_traveler.visible:
+		return
+	_desperate_walk_amount = move_toward(_desperate_walk_amount, 1.0 if _desperate_is_walking else 0.0, delta * 8.0)
+	if _desperate_is_walking:
+		_desperate_walk_phase = fmod(_desperate_walk_phase + delta * 9.5, TAU)
+	var material := desperate_sprite.material as ShaderMaterial
+	if material != null:
+		material.set_shader_parameter("walk_phase", _desperate_walk_phase)
+		material.set_shader_parameter("walk_amount", _desperate_walk_amount)
+	var horizontal_sign := -1.0 if _journey_phase == "opening_escape" else 1.0
+	desperate_sprite.scale.x = horizontal_sign * absf(desperate_sprite.scale.x)
+	desperate_sprite.rotation = sin(_desperate_walk_phase) * 0.012 * _desperate_walk_amount
 
 
 func _consume_shared_provision() -> void:
