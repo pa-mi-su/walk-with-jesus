@@ -167,7 +167,9 @@ func _finish_journey(world: Node) -> void:
 				await process_frame
 			await _wait_for_render()
 			_save_viewport("mercy-arrival-1280x720.png")
-			await _wait_for_phase(world, "story", 300)
+			await _wait_for_phase(world, "mercy_waiting", 300)
+			world.interact_with_desperate_traveler()
+			await _wait_for_phase(world, "story", 120)
 			_save_viewport("mercy-encounter-1280x720.png")
 			world.choose_story_response(0)
 			await _wait_for_phase(world, "mercy_action", 120)

@@ -142,13 +142,27 @@ func end_session() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _session_active or not visible or _journey_phase not in ["leading", "catch_up"]:
+	if not _session_active or not visible:
 		return
+	var pressed_position := Vector2.ZERO
+	var pressed := false
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_set_walk_target(_screen_to_world(event.position))
-		get_viewport().set_input_as_handled()
+		pressed_position = event.position
+		pressed = true
 	elif event is InputEventScreenTouch and event.pressed:
-		_set_walk_target(_screen_to_world(event.position))
+		pressed_position = event.position
+		pressed = true
+	if not pressed:
+		return
+	if _journey_phase == "mercy_waiting":
+		var world_position := _screen_to_world(pressed_position)
+		if world_position.distance_to(desperate_traveler.global_position) <= 105.0:
+			interact_with_desperate_traveler()
+		else:
+			_show_pickup_feedback("Tap the traveler to check on him")
+		get_viewport().set_input_as_handled()
+	elif _journey_phase in ["leading", "catch_up"]:
+		_set_walk_target(_screen_to_world(pressed_position))
 		get_viewport().set_input_as_handled()
 
 
@@ -212,6 +226,16 @@ func choose_story_response(index: int) -> void:
 
 func continue_story() -> void:
 	_on_story_primary_pressed()
+
+
+func interact_with_desperate_traveler() -> void:
+	if _journey_phase != "mercy_waiting":
+		return
+	_journey_phase = "story"
+	instruction_label.text = "Choose how you will respond"
+	journey_hint.text = "Mercy is more than an answer"
+	desperate_action_label.text = "He recognizes you"
+	story_overlay.show_story_stop(_current_stop)
 
 
 func _on_story_primary_pressed() -> void:
@@ -292,7 +316,7 @@ func _on_guide_stop_reached(route_index: int) -> void:
 		desperate_traveler.modulate = Color.WHITE
 		desperate_traveler.visible = true
 		_set_desperate_label_below(true)
-		desperate_action_label.text = "SOMEONE IS BESIDE THE ROAD"
+		desperate_action_label.text = "Someone is beside the road"
 		desperate_action_label.visible = true
 	jesus_guide.set_guidance_cue("CATCH UP\n↓")
 	instruction_label.text = "Approach the traveler beside Jesus" if _is_mercy_stop() else "Catch up to Jesus"
@@ -363,10 +387,10 @@ func _begin_opening_encounter() -> void:
 	desperate_traveler.modulate = Color.WHITE
 	desperate_traveler.visible = true
 	_set_desperate_label_below(false)
-	desperate_action_label.text = "A TRAVELER APPROACHES…"
+	desperate_action_label.text = "A traveler approaches…"
 	desperate_action_label.visible = true
 	instruction_label.text = "Someone is approaching on the road"
-	journey_hint.text = "WATCH WHAT HAPPENS"
+	journey_hint.text = "Watch the road"
 	_desperate_is_walking = true
 	_encounter_tween = create_tween()
 	_encounter_tween.set_trans(Tween.TRANS_SINE)
@@ -382,7 +406,7 @@ func _begin_opening_encounter() -> void:
 		return
 	_desperate_is_walking = false
 	_journey_phase = "opening_reach"
-	desperate_action_label.text = "HE REACHES FOR YOUR SATCHEL"
+	desperate_action_label.text = "He reaches for your satchel"
 	instruction_label.text = "The desperate traveler reaches toward your supplies"
 	await get_tree().create_timer(_scaled_encounter_time(1.6)).timeout
 	if _journey_phase != "opening_reach":
@@ -390,15 +414,15 @@ func _begin_opening_encounter() -> void:
 	_journey_phase = "opening_taken"
 	_provisions["bread"] = maxi(0, get_provision_count("bread") - 1)
 	_update_resource_hud()
-	desperate_action_label.text = "BREAD TAKEN  ·  1 → 0"
+	desperate_action_label.text = "Bread taken  ·  1 → 0"
 	instruction_label.text = "Your bread has been taken"
-	journey_hint.text = "REMEMBER HIS FACE"
+	journey_hint.text = "Remember his face"
 	_show_pickup_feedback("Bread taken from your satchel")
 	await get_tree().create_timer(_scaled_encounter_time(2.2)).timeout
 	if _journey_phase != "opening_taken":
 		return
 	_journey_phase = "opening_escape"
-	desperate_action_label.text = "THE TRAVELER FLEES DOWN THE ROAD"
+	desperate_action_label.text = "The traveler flees down the road"
 	_desperate_is_walking = true
 	_encounter_tween = create_tween().set_parallel(true)
 	_encounter_tween.set_trans(Tween.TRANS_SINE)
@@ -422,10 +446,10 @@ func _begin_opening_encounter() -> void:
 func _begin_mercy_scene() -> void:
 	_journey_phase = "mercy_scene"
 	player.stop()
-	desperate_action_label.text = "THE SAME TRAVELER  ·  WEAK AND HUNGRY"
+	desperate_action_label.text = "The same traveler  ·  weak and hungry"
 	desperate_action_label.visible = true
 	instruction_label.text = "It is the traveler who took your bread"
-	journey_hint.text = "WHAT WILL YOU DO?"
+	journey_hint.text = "Look closely"
 	var start_position := desperate_traveler.position
 	_encounter_tween = create_tween()
 	_encounter_tween.set_trans(Tween.TRANS_SINE)
@@ -438,10 +462,10 @@ func _begin_mercy_scene() -> void:
 	await get_tree().create_timer(_scaled_encounter_time(2.4)).timeout
 	if _journey_phase != "mercy_scene":
 		return
-	_journey_phase = "story"
-	instruction_label.text = "Choose how you will respond"
-	journey_hint.text = "MERCY IS MORE THAN AN ANSWER"
-	story_overlay.show_story_stop(_current_stop)
+	_journey_phase = "mercy_waiting"
+	instruction_label.text = "Tap the traveler to check on him"
+	journey_hint.text = "Tap the traveler"
+	desperate_action_label.text = "Needs help  ·  tap"
 
 
 func _play_mercy_response(choice: Dictionary, feedback_heading: String) -> void:
@@ -449,18 +473,18 @@ func _play_mercy_response(choice: Dictionary, feedback_heading: String) -> void:
 	story_overlay.close()
 	player.stop()
 	if _mercy_shown:
-		desperate_action_label.text = "YOU FORGIVE HIM AND STOP TO HELP"
+		desperate_action_label.text = "You forgive him and stop to help"
 		instruction_label.text = "You put the teaching into action"
-		journey_hint.text = "MERCY IN ACTION"
+		journey_hint.text = "Mercy in action"
 		_encounter_tween = create_tween()
 		_encounter_tween.set_trans(Tween.TRANS_SINE)
 		_encounter_tween.set_ease(Tween.EASE_OUT)
 		_encounter_tween.tween_property(desperate_traveler, "position:y", desperate_traveler.position.y - 24.0, _scaled_encounter_time(2.0))
 		await _encounter_tween.finished
 	else:
-		desperate_action_label.text = "YOU RECOVER THE SATCHEL AND TURN AWAY"
+		desperate_action_label.text = "You recover the satchel and turn away"
 		instruction_label.text = "The traveler remains beside the road"
-		journey_hint.text = "A MERCY OPPORTUNITY REMAINS"
+		journey_hint.text = "A mercy opportunity remains"
 		await get_tree().create_timer(_scaled_encounter_time(2.8)).timeout
 	if _journey_phase != "mercy_action":
 		return
@@ -498,8 +522,11 @@ func _update_desperate_animation(delta: float) -> void:
 	if material != null:
 		material.set_shader_parameter("walk_phase", _desperate_walk_phase)
 		material.set_shader_parameter("walk_amount", _desperate_walk_amount)
+	var depth := clampf((desperate_traveler.position.y - 70.0) / 1130.0, 0.0, 1.0)
+	var visual_scale := 0.06 * lerpf(0.72, 1.05, depth)
 	var horizontal_sign := -1.0 if _journey_phase == "opening_escape" else 1.0
-	desperate_sprite.scale.x = horizontal_sign * absf(desperate_sprite.scale.x)
+	desperate_sprite.scale = Vector2(horizontal_sign * visual_scale, visual_scale)
+	desperate_sprite.position.y = -1536.0 * visual_scale
 	desperate_sprite.rotation = sin(_desperate_walk_phase) * 0.012 * _desperate_walk_amount
 
 
