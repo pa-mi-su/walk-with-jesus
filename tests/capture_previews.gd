@@ -43,6 +43,8 @@ func _capture() -> void:
 	desktop_world.choose_story_response(1)
 	await _wait_for_render()
 	_save_viewport("story-response-1280x720.png")
+	await _finish_journey(desktop_world)
+	_save_viewport("journey-complete-1280x720.png")
 
 	main.get_node("TestWorld").return_to_title_requested.emit()
 	root.size = Vector2i(844, 390)
@@ -89,6 +91,28 @@ func _advance_to_story_stop(world: Node) -> void:
 	world.player.position = world.jesus_guide.position + Vector2(45.0, 35.0)
 	await physics_frame
 	await _wait_for_render()
+
+
+func _finish_journey(world: Node) -> void:
+	world.jesus_guide.walking_speed = 1800.0
+	world.continue_story()
+	var correct_answers := [0, 1, 0, 1]
+	for route_index in range(2, 6):
+		for _frame in range(120):
+			if world.get_journey_phase() == "catch_up":
+				break
+			await physics_frame
+		world.player.stop()
+		world.player.position = world.jesus_guide.position + Vector2(40.0, 30.0)
+		await physics_frame
+		await _wait_for_render()
+		if route_index < 5:
+			world.choose_story_response(correct_answers[route_index - 1])
+			await _wait_for_render()
+			world.continue_story()
+		else:
+			world.continue_story()
+			await _wait_for_render()
 
 
 func _save_viewport(file_name: String) -> void:

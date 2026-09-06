@@ -153,6 +153,12 @@ func _check_player_movement() -> void:
 	var world := world_scene.instantiate()
 	root.add_child(world)
 	world.begin_session()
+	var hidden_caches: Array[Node] = []
+	for collectible: Node in get_nodes_in_group("journey_collectibles"):
+		if world.is_ancestor_of(collectible):
+			hidden_caches.append(collectible)
+	_expect_equal(hidden_caches.size(), 4, "the road has four scarce provision caches")
+	_expect_true(not hidden_caches[0].is_revealed(), "roadside provisions begin hidden")
 	world.start_journey()
 	await physics_frame
 	await physics_frame
@@ -169,10 +175,18 @@ func _check_player_movement() -> void:
 	_expect_true(player.global_position.distance_to(starting_position) > 200.0, "player travels beyond the opening screen area")
 	_expect_true(camera.position.distance_to(starting_camera_position) > 80.0, "camera follows the journey down the road")
 	_expect_true(peak_walk_amount > 0.5, "the selected traveler uses a visible walking cycle")
-	_expect_true(
-		world.get_provision_count("bread") + world.get_provision_count("water") > 0,
-		"walking over bread or water collects journey provisions"
-	)
+	_expect_equal(world.get_provision_count("bread") + world.get_provision_count("water"), 0, "following the main road does not hand out free provisions")
+	player.stop()
+	player.global_position = hidden_caches[0].global_position + Vector2(100.0, 0.0)
+	await physics_frame
+	await process_frame
+	_expect_true(hidden_caches[0].is_revealed(), "approaching a roadside detour reveals its hidden cache")
+	world._set_walk_target(hidden_caches[0].global_position)
+	for _frame in range(90):
+		if world.get_provision_count("bread") + world.get_provision_count("water") > 0:
+			break
+		await physics_frame
+	_expect_true(world.get_provision_count("bread") + world.get_provision_count("water") > 0, "exploring the detour collects and restores a provision")
 
 	world.queue_free()
 	await process_frame
@@ -209,6 +223,13 @@ func _check_complete_journey() -> void:
 			world.continue_story()
 
 	_expect_equal(world.get_journey_phase(), "complete", "Journey 1 reaches a clear completion state")
+	_expect_equal(world.get_correct_answer_count(), 4, "the completion result retains the Scripture score")
+	_expect_true(world.story_overlay.visible, "completion displays a visible journey result")
+	_expect_equal(world.story_overlay.primary_button.text, "Return to Sanctuary  →", "completion offers a clear return to Sanctuary")
+	var return_requested := [false]
+	world.return_to_title_requested.connect(func() -> void: return_requested[0] = true)
+	world.continue_story()
+	_expect_true(return_requested[0], "the completion action returns to Sanctuary")
 	world.queue_free()
 	await process_frame
 

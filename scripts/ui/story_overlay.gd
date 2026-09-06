@@ -81,6 +81,25 @@ func show_completion(stop: Dictionary) -> void:
 	_show_and_focus(primary_button)
 
 
+func show_journey_result(correct_answers: int, total_questions: int, strength: int, bread: int, water: int) -> void:
+	_set_common({
+		"kicker": "JOURNEY 1 COMPLETE · MERCY SEAL EARNED",
+		"title": "You completed the road",
+		"body": "SCRIPTURE ANSWERS  %d OF %d\nJOURNEY STRENGTH  %d\nPROVISIONS FOUND  %d BREAD · %d WATER" % [correct_answers, total_questions, strength, bread, water],
+	})
+	prompt_label.visible = false
+	choices.visible = false
+	response_label.remove_theme_color_override("font_color")
+	response_label.add_theme_color_override("font_color", Color("c8efd6"))
+	response_label.text = "Mercy is remembered not only by knowing the story, but by living it."
+	response_label.visible = true
+	reference_label.text = "Journey 1 · Luke 10:25–37"
+	reference_label.visible = true
+	primary_button.text = "Return to Sanctuary  →"
+	primary_button.visible = true
+	_show_and_focus(primary_button)
+
+
 func close() -> void:
 	visible = false
 

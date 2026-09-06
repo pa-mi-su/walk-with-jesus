@@ -51,7 +51,7 @@ Approval checkpoint: confirm the 2D isometric movement feel and overall visual d
 
 Current prototype slice: Jesus visibly leads each route leg; the HUD gives follow/catch-up guidance; reaching Him opens four externally-authored factual questions about Luke 10:25–37, each with immediate correct/incorrect feedback, followed by a final Journey 1 reflection. Incorrect answers deduct 15 Journey Strength without blocking progress. This is an interaction scaffold, not approved final religious copy or the complete Good Samaritan encounter.
 
-The road also includes optional bread and water provisions. Walking and incorrect Scripture answers use the fictional traveler's strength; collecting provisions restores it. Jesus does not have a rechargeable game-energy statistic.
+The road also includes four scarce bread and water caches placed on optional roadside detours. They remain nearly hidden until the traveler explores nearby, when a glimmer and clue reveal them. Walking and incorrect Scripture answers use the fictional traveler's strength; collecting provisions restores it. Jesus does not have a rechargeable game-energy statistic. Completing the journey presents a results card with a Mercy Seal, Scripture score, remaining strength, provisions found, and a return-to-Sanctuary action.
 
 Approval checkpoint: review the provisional religious content and choice framing.
 

@@ -9,12 +9,10 @@ const MAX_TRAVELER_STRENGTH := 100.0
 const STRENGTH_DRAIN_PER_SECOND := 5.0
 const INCORRECT_ANSWER_PENALTY := 15.0
 const COLLECTIBLE_LAYOUT := [
-	{"kind": "bread", "display_name": "Bread", "strength_restore": 18.0, "texture_path": "res://assets/generated/collectible-bread.png", "position": Vector2(1390.0, 1095.0)},
-	{"kind": "water", "display_name": "Water", "strength_restore": 24.0, "texture_path": "res://assets/generated/collectible-water.png", "position": Vector2(1245.0, 975.0)},
-	{"kind": "bread", "display_name": "Bread", "strength_restore": 18.0, "texture_path": "res://assets/generated/collectible-bread.png", "position": Vector2(1020.0, 795.0)},
-	{"kind": "water", "display_name": "Water", "strength_restore": 24.0, "texture_path": "res://assets/generated/collectible-water.png", "position": Vector2(810.0, 620.0)},
-	{"kind": "bread", "display_name": "Bread", "strength_restore": 18.0, "texture_path": "res://assets/generated/collectible-bread.png", "position": Vector2(600.0, 445.0)},
-	{"kind": "water", "display_name": "Water", "strength_restore": 24.0, "texture_path": "res://assets/generated/collectible-water.png", "position": Vector2(395.0, 265.0)},
+	{"kind": "water", "display_name": "water jar", "strength_restore": 24.0, "texture_path": "res://assets/generated/collectible-water.png", "position": Vector2(1276.0, 1223.0)},
+	{"kind": "bread", "display_name": "bread bundle", "strength_restore": 18.0, "texture_path": "res://assets/generated/collectible-bread.png", "position": Vector2(696.0, 724.0)},
+	{"kind": "water", "display_name": "water jar", "strength_restore": 24.0, "texture_path": "res://assets/generated/collectible-water.png", "position": Vector2(511.0, 560.0)},
+	{"kind": "bread", "display_name": "bread bundle", "strength_restore": 18.0, "texture_path": "res://assets/generated/collectible-bread.png", "position": Vector2(297.0, 365.0)},
 ]
 
 @onready var road_background: Sprite2D = $RoadBackground
@@ -41,6 +39,7 @@ var _current_stop: Dictionary = {}
 var _provisions := {"bread": 0, "water": 0}
 var _traveler_strength := MAX_TRAVELER_STRENGTH
 var _last_answer_correct := false
+var _correct_answer_count := 0
 var _pickup_tween: Tween
 
 
@@ -171,6 +170,10 @@ func was_last_answer_correct() -> bool:
 	return _last_answer_correct
 
 
+func get_correct_answer_count() -> int:
+	return _correct_answer_count
+
+
 func add_provision(kind: String, strength_restore: float) -> void:
 	if kind not in _provisions:
 		return
@@ -193,11 +196,19 @@ func _on_story_primary_pressed() -> void:
 		story_overlay.close()
 		_lead_to_next_stop()
 	elif _journey_phase == "reflection":
-		story_overlay.close()
 		_journey_phase = "complete"
 		jesus_guide.set_guidance_cue("")
 		instruction_label.text = "Journey 1 complete"
-		journey_hint.text = "Carry mercy into the choices you make"
+		journey_hint.text = "Mercy Seal earned"
+		story_overlay.show_journey_result(
+			_correct_answer_count,
+			4,
+			roundi(_traveler_strength),
+			get_provision_count("bread"),
+			get_provision_count("water")
+		)
+	elif _journey_phase == "complete":
+		return_to_title_requested.emit()
 
 
 func _on_story_choice_selected(index: int) -> void:
@@ -208,7 +219,9 @@ func _on_story_choice_selected(index: int) -> void:
 		return
 	var choice: Dictionary = choices[index]
 	_last_answer_correct = bool(choice.get("correct", false))
-	if not _last_answer_correct:
+	if _last_answer_correct:
+		_correct_answer_count += 1
+	else:
 		_set_traveler_strength(_traveler_strength - INCORRECT_ANSWER_PENALTY)
 	_journey_phase = "story_response"
 	story_overlay.show_choice_response(
@@ -242,6 +255,7 @@ func _open_current_story_stop() -> void:
 	player.stop()
 	jesus_guide.set_guidance_cue("")
 	destination_marker.visible = false
+	_hide_pickup_feedback()
 	if bool(_current_stop.get("completion", false)):
 		_journey_phase = "reflection"
 		instruction_label.text = "Journey reflection"
@@ -281,6 +295,7 @@ func _reset_journey_resources() -> void:
 	_provisions = {"bread": 0, "water": 0}
 	_traveler_strength = MAX_TRAVELER_STRENGTH
 	_last_answer_correct = false
+	_correct_answer_count = 0
 	player.set_strength_ratio(1.0)
 	pickup_toast.text = ""
 	pickup_toast.modulate.a = 0.0
@@ -292,7 +307,9 @@ func _spawn_collectibles() -> void:
 	for collectible_data: Dictionary in COLLECTIBLE_LAYOUT:
 		var collectible := COLLECTIBLE_SCENE.instantiate() as JourneyCollectible
 		collectible.configure(collectible_data)
+		collectible.set_traveler(player)
 		collectible.collected.connect(_on_collectible_collected)
+		collectible.discovered.connect(_on_collectible_discovered)
 		world_content.add_child(collectible)
 
 
@@ -305,6 +322,12 @@ func _clear_collectibles() -> void:
 func _on_collectible_collected(_collectible: JourneyCollectible, kind: String, strength_restore: float) -> void:
 	add_provision(kind, strength_restore)
 	_show_pickup_feedback("%s collected  ·  strength +%d" % [kind.capitalize(), roundi(strength_restore)])
+
+
+func _on_collectible_discovered(_collectible: JourneyCollectible, display_name: String) -> void:
+	if _journey_phase not in ["leading", "catch_up"]:
+		return
+	_show_pickup_feedback("A hidden %s glimmers nearby — explore the roadside" % display_name)
 
 
 func _set_traveler_strength(value: float) -> void:
@@ -329,6 +352,13 @@ func _show_pickup_feedback(message: String) -> void:
 	_pickup_tween.tween_interval(1.3)
 	_pickup_tween.tween_property(pickup_toast, "modulate:a", 0.0, 0.5)
 	_pickup_tween.tween_callback(func() -> void: pickup_toast.text = "")
+
+
+func _hide_pickup_feedback() -> void:
+	if _pickup_tween != null and _pickup_tween.is_valid():
+		_pickup_tween.kill()
+	pickup_toast.text = ""
+	pickup_toast.modulate.a = 0.0
 
 
 func _build_navigation_area() -> void:

@@ -24,7 +24,8 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] Activating “Follow Jesus” makes Jesus set out before the player.
 - [ ] The HUD continually indicates that Jesus is leading and gives an approximate distance while traveling.
 - [ ] The introduction explains Scripture questions, the 15-strength wrong-answer penalty, and bread/water recovery.
-- [ ] Bread and water are clearly visible as optional glowing pickups without obscuring the road.
+- [ ] Only four bread/water caches exist, placed on optional roadside detours rather than directly on the main route.
+- [ ] A cache begins almost hidden, reveals itself with a glimmer and clue only when approached, and still remains discoverable.
 - [ ] Walking gradually lowers the fictional traveler's strength and never creates an energy meter for Jesus.
 - [ ] Collecting bread or water increases its inventory count, restores strength, and gives immediate feedback.
 - [ ] Clicking several reachable places moves the traveler toward each selected destination.
@@ -44,6 +45,8 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] An incorrect answer is identified, shows the correct Scriptural event, and deducts exactly 15 Journey Strength.
 - [ ] A wrong answer never blocks the player from continuing to follow Jesus.
 - [ ] The final stop presents a Journey 1 reflection and completion action.
+- [ ] Completing the reflection opens a visible results card with a Mercy Seal, Scripture score, remaining strength, and provisions found.
+- [ ] The results card has a clear “Return to Sanctuary” action that works.
 - [ ] Clicking the Title button does not also move the traveler.
 
 ### Responsive landscape layout
