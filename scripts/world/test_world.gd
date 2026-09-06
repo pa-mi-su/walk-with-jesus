@@ -142,27 +142,13 @@ func end_session() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _session_active or not visible:
+	if not _session_active or not visible or _journey_phase not in ["leading", "catch_up"]:
 		return
-	var pressed_position := Vector2.ZERO
-	var pressed := false
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		pressed_position = event.position
-		pressed = true
-	elif event is InputEventScreenTouch and event.pressed:
-		pressed_position = event.position
-		pressed = true
-	if not pressed:
-		return
-	if _journey_phase == "mercy_waiting":
-		var world_position := _screen_to_world(pressed_position)
-		if world_position.distance_to(desperate_traveler.global_position) <= 105.0:
-			interact_with_desperate_traveler()
-		else:
-			_show_pickup_feedback("Tap the traveler to check on him")
+		_set_walk_target(_screen_to_world(event.position))
 		get_viewport().set_input_as_handled()
-	elif _journey_phase in ["leading", "catch_up"]:
-		_set_walk_target(_screen_to_world(pressed_position))
+	elif event is InputEventScreenTouch and event.pressed:
+		_set_walk_target(_screen_to_world(event.position))
 		get_viewport().set_input_as_handled()
 
 
@@ -228,8 +214,8 @@ func continue_story() -> void:
 	_on_story_primary_pressed()
 
 
-func interact_with_desperate_traveler() -> void:
-	if _journey_phase != "mercy_waiting":
+func _show_mercy_choice() -> void:
+	if _journey_phase != "mercy_scene":
 		return
 	_journey_phase = "story"
 	instruction_label.text = "Choose how you will respond"
@@ -462,10 +448,11 @@ func _begin_mercy_scene() -> void:
 	await get_tree().create_timer(_scaled_encounter_time(2.4)).timeout
 	if _journey_phase != "mercy_scene":
 		return
-	_journey_phase = "mercy_waiting"
-	instruction_label.text = "Tap the traveler to check on him"
-	journey_hint.text = "Tap the traveler"
-	desperate_action_label.text = "Needs help  ·  tap"
+	desperate_action_label.text = "He looks up and recognizes you"
+	instruction_label.text = "He is exhausted and needs help"
+	journey_hint.text = "Your response matters"
+	await get_tree().create_timer(_scaled_encounter_time(1.2)).timeout
+	_show_mercy_choice()
 
 
 func _play_mercy_response(choice: Dictionary, feedback_heading: String) -> void:

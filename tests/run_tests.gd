@@ -273,10 +273,8 @@ func _check_complete_journey() -> void:
 		if route_index == 5:
 			_expect_equal(world.get_journey_phase(), "mercy_scene", "the return encounter remains visible before the choice appears")
 			_expect_true(not world.story_overlay.visible, "the decision card waits while the player sees the traveler")
-			await _wait_for_journey_phase(world, "mercy_waiting")
-			_expect_true(not world.story_overlay.visible, "the game waits for the player to interact with the traveler")
-			world.interact_with_desperate_traveler()
-			_expect_equal(world.get_journey_phase(), "story", "tapping the traveler opens the mercy choice")
+			await _wait_for_journey_phase(world, "story")
+			_expect_equal(world.get_journey_phase(), "story", "the mercy choice opens automatically after the visible encounter")
 		if route_index <= 4:
 			_expect_equal(world.get_journey_phase(), "story", "stop %d opens a Scripture question" % route_index)
 			var strength_before_answer: float = world.get_traveler_strength()
