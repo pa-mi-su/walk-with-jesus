@@ -1,15 +1,21 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/app/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/ui/title_screen.tscn" id="2_title"]
 [ext_resource type="PackedScene" path="res://scenes/world/test_world.tscn" id="3_world"]
 [ext_resource type="PackedScene" path="res://scenes/ui/character_selection.tscn" id="4_selection"]
+[ext_resource type="PackedScene" path="res://scenes/ui/journey_selection.tscn" id="5_journeys"]
+[ext_resource type="PackedScene" path="res://scenes/world/storm_world.tscn" id="6_storm"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
 
 [node name="TestWorld" parent="." instance=ExtResource("3_world")]
 
+[node name="StormWorld" parent="." instance=ExtResource("6_storm")]
+
 [node name="CharacterSelection" parent="." instance=ExtResource("4_selection")]
+
+[node name="JourneySelection" parent="." instance=ExtResource("5_journeys")]
 
 [node name="TitleScreen" parent="." instance=ExtResource("2_title")]

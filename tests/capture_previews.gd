@@ -24,12 +24,18 @@ func _capture() -> void:
 
 	main.get_node("TitleScreen").start_requested.emit()
 	await _wait_for_render()
+	_save_viewport("journey-selection-1280x720.png")
+	main.get_node("JourneySelection").journey_selected.emit("good_samaritan")
+	await _wait_for_render()
 	_save_viewport("character-selection-1280x720.png")
 	main.get_node("CharacterSelection").select_character_by_index(2)
 	main.get_node("CharacterSelection").confirm_selection()
 	await _wait_for_render()
 	_save_viewport("journey-intro-1280x720.png")
 	main.get_node("TestWorld").start_journey()
+	await _wait_for_render()
+	_save_viewport("bread-theft-1280x720.png")
+	main.get_node("TestWorld").continue_story()
 	await _wait_for_render()
 	_save_viewport("movement-1280x720.png")
 	var desktop_world := main.get_node("TestWorld")
@@ -45,12 +51,29 @@ func _capture() -> void:
 	_save_viewport("story-response-1280x720.png")
 	await _finish_journey(desktop_world)
 	_save_viewport("journey-complete-1280x720.png")
+	desktop_world.continue_story()
+	await _wait_for_render()
+	main.get_node("JourneySelection").journey_selected.emit("calming_storm")
+	await _wait_for_render()
+	main.get_node("CharacterSelection").select_character_by_index(0)
+	main.get_node("CharacterSelection").confirm_selection()
+	await _wait_for_render()
+	_save_viewport("storm-intro-1280x720.png")
+	var storm_world := main.get_node("StormWorld") as StormWorld
+	storm_world.continue_story()
+	await _wait_for_render()
+	_save_viewport("storm-deck-tasks-1280x720.png")
+	await _finish_storm_journey(storm_world)
+	_save_viewport("storm-complete-1280x720.png")
 
-	main.get_node("TestWorld").return_to_title_requested.emit()
+	main.get_node("StormWorld").return_to_title_requested.emit()
 	root.size = Vector2i(844, 390)
 	await _wait_for_render()
 	_save_viewport("title-844x390.png")
 	main.get_node("TitleScreen").start_requested.emit()
+	await _wait_for_render()
+	_save_viewport("journey-selection-844x390.png")
+	main.get_node("JourneySelection").journey_selected.emit("good_samaritan")
 	await _wait_for_render()
 	_save_viewport("character-selection-844x390.png")
 	main.get_node("CharacterSelection").select_character_by_index(1)
@@ -58,6 +81,9 @@ func _capture() -> void:
 	await _wait_for_render()
 	_save_viewport("journey-intro-844x390.png")
 	main.get_node("TestWorld").start_journey()
+	await _wait_for_render()
+	_save_viewport("bread-theft-844x390.png")
+	main.get_node("TestWorld").continue_story()
 	await _wait_for_render()
 	_save_viewport("movement-844x390.png")
 	var phone_world := main.get_node("TestWorld")
@@ -69,6 +95,17 @@ func _capture() -> void:
 	await _advance_to_story_stop(phone_world)
 	_save_viewport("story-stop-844x390.png")
 	main.get_node("TestWorld").return_to_title_requested.emit()
+	main.get_node("TitleScreen").start_requested.emit()
+	main.get_node("JourneySelection").journey_selected.emit("calming_storm")
+	await _wait_for_render()
+	main.get_node("CharacterSelection").select_character_by_index(3)
+	main.get_node("CharacterSelection").confirm_selection()
+	await _wait_for_render()
+	_save_viewport("storm-intro-844x390.png")
+	main.get_node("StormWorld").continue_story()
+	await _wait_for_render()
+	_save_viewport("storm-deck-tasks-844x390.png")
+	main.get_node("StormWorld").return_to_title_requested.emit()
 
 	root.size = Vector2i(1024, 768)
 	await _wait_for_render()
@@ -97,7 +134,7 @@ func _finish_journey(world: Node) -> void:
 	world.jesus_guide.walking_speed = 1800.0
 	world.continue_story()
 	var correct_answers := [0, 1, 0, 1]
-	for route_index in range(2, 6):
+	for route_index in range(2, 7):
 		for _frame in range(120):
 			if world.get_journey_phase() == "catch_up":
 				break
@@ -106,13 +143,44 @@ func _finish_journey(world: Node) -> void:
 		world.player.position = world.jesus_guide.position + Vector2(40.0, 30.0)
 		await physics_frame
 		await _wait_for_render()
-		if route_index < 5:
+		if route_index <= 4:
 			world.choose_story_response(correct_answers[route_index - 1])
+			await _wait_for_render()
+			world.continue_story()
+		elif route_index == 5:
+			_save_viewport("mercy-encounter-1280x720.png")
+			world.choose_story_response(0)
 			await _wait_for_render()
 			world.continue_story()
 		else:
 			world.continue_story()
 			await _wait_for_render()
+
+
+func _finish_storm_journey(world: StormWorld) -> void:
+	_complete_storm_tasks(world)
+	await _wait_for_render()
+	_save_viewport("storm-question-1280x720.png")
+	world.choose_story_response(0)
+	world.continue_story()
+	await _wait_for_render()
+	_complete_storm_tasks(world)
+	await _wait_for_render()
+	world.choose_story_response(1)
+	world.continue_story()
+	world.player.position = world.jesus.position
+	await process_frame
+	await _wait_for_render()
+	world.choose_story_response(0)
+	world.continue_story()
+	world.continue_story()
+	await _wait_for_render()
+
+
+func _complete_storm_tasks(world: StormWorld) -> void:
+	for task: Node in get_nodes_in_group("storm_tasks"):
+		if world.is_ancestor_of(task) and not task.is_queued_for_deletion():
+			task._on_body_entered(world.player)
 
 
 func _save_viewport(file_name: String) -> void:

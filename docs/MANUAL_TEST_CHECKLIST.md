@@ -9,10 +9,11 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] Launching the project opens the title screen without an error dialog.
 - [ ] The title reads “Walk With Jesus.”
 - [ ] “A Sanctuary Experience” is clearly visible.
-- [ ] “Begin the Journey” is reachable by mouse and keyboard focus.
+- [ ] “Choose a journey” is reachable by mouse and keyboard focus.
 - [ ] The title screen presents exactly one control that looks like a start action.
 - [ ] The featured card clearly states what Jesus is doing or teaching in this journey.
-- [ ] Activating the button opens character selection before the movement environment.
+- [ ] Activating the button opens a journey selector with Journey 1 and Journey 2.
+- [ ] Selecting either journey opens character selection before its environment.
 - [ ] Four fictional travelers are visible and selectable; Jesus is not a selectable character.
 - [ ] Continue remains disabled until a traveler is chosen, then names the chosen traveler.
 - [ ] The chosen traveler is the player-controlled person shown in the movement environment.
@@ -44,10 +45,24 @@ Record the Godot version, operating system, device or simulator, viewport size, 
 - [ ] A correct answer is identified, explains the Scriptural event, and preserves Journey Strength.
 - [ ] An incorrect answer is identified, shows the correct Scriptural event, and deducts exactly 15 Journey Strength.
 - [ ] A wrong answer never blocks the player from continuing to follow Jesus.
+- [ ] Journey 1 begins with a clearly labeled fictional encounter in which the same desperate traveler shown later takes the initial bread.
+- [ ] The later encounter lets the player forgive and help or leave; the choice changes whether the Mercy Seal is earned.
 - [ ] The final stop presents a Journey 1 reflection and completion action.
 - [ ] Completing the reflection opens a visible results card with a Mercy Seal, Scripture score, remaining strength, and provisions found.
-- [ ] The results card has a clear “Return to Sanctuary” action that works.
+- [ ] The results card has a clear action leading back to journey selection.
 - [ ] Clicking the Title button does not also move the traveler.
+
+### Journey 2 — Jesus Calms the Storm
+
+- [ ] Journey 2 identifies Mark 4:35–41 and explains the Sea of Galilee crossing without presenting invented dialogue as Scripture.
+- [ ] Three deck-preparation stations appear and none completes automatically at the starting position.
+- [ ] Clicking or tapping each marked station moves the selected traveler there and completes the task.
+- [ ] After preparation, three new water-bailing actions must be completed during the storm.
+- [ ] The player must physically cross the deck to reach Jesus before the final question opens.
+- [ ] Journey 2 asks three factual questions with exactly one correct answer each.
+- [ ] Incorrect answers deduct strength without blocking progress.
+- [ ] Completion presents the Scripture score, six deck actions, remaining strength, and a Faith Seal.
+- [ ] The Journey 2 completion action returns to the two-level journey selector.
 
 ### Responsive landscape layout
 

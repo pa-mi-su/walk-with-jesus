@@ -212,7 +212,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_chip")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 0.97, 1)
 theme_override_font_sizes/font_size = 15
-text = "JOURNEY 1  ·  JESUS TEACHES ABOUT MERCY  ·  LUKE 10:25–37"
+text = "TWO JOURNEYS  ·  MERCY AND FAITH  ·  LUKE 10 + MARK 4"
 horizontal_alignment = 1
 
 [node name="JourneyCard" type="PanelContainer" parent="SafeMargin/Page/HeroCenter/HeroPanel/HeroColumns"]
@@ -236,13 +236,13 @@ stretch_mode = 6
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.99, 1, 1)
 theme_override_font_sizes/font_size = 23
-text = "Jesus teaches the Good Samaritan"
+text = "Choose your Gospel journey"
 
 [node name="CardDetail" type="Label" parent="SafeMargin/Page/HeroCenter/HeroPanel/HeroColumns/JourneyCard/CardContent"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.8, 0.84, 1)
 theme_override_font_sizes/font_size = 15
-text = "Teaching and mercy · About 10 minutes"
+text = "Journey 1: Mercy · Journey 2: The storm"
 
 [node name="StartButton" type="Button" parent="SafeMargin/Page/HeroCenter/HeroPanel/HeroColumns/JourneyCard/CardContent"]
 unique_name_in_owner = true
@@ -254,7 +254,7 @@ theme_override_font_sizes/font_size = 21
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
-text = "Begin the journey   →"
+text = "Choose a journey   →"
 
 [node name="Footer" type="Label" parent="SafeMargin/Page"]
 layout_mode = 2

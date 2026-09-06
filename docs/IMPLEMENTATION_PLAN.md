@@ -49,9 +49,11 @@ Approval checkpoint: confirm the 2D isometric movement feel and overall visual d
 - Add a story runner that emits presentation-neutral events.
 - Test parsing, invalid content, branching, and deterministic state transitions.
 
-Current prototype slice: Jesus visibly leads each route leg; the HUD gives follow/catch-up guidance; reaching Him opens four externally-authored factual questions about Luke 10:25–37, each with immediate correct/incorrect feedback, followed by a final Journey 1 reflection. Incorrect answers deduct 15 Journey Strength without blocking progress. This is an interaction scaffold, not approved final religious copy or the complete Good Samaritan encounter.
+Current Journey 1 slice: Jesus visibly leads each route leg; the HUD gives follow/catch-up guidance; reaching Him opens four externally-authored factual questions about Luke 10:25–37. A clearly labeled fictional framing story introduces a desperate traveler who steals bread, then returns later exhausted and hungry so the player can apply mercy rather than only recall the parable. Incorrect factual answers deduct 15 Journey Strength without blocking progress.
 
-The road also includes four scarce bread and water caches placed on optional roadside detours. They remain nearly hidden until the traveler explores nearby, when a glimmer and clue reveal them. Walking and incorrect Scripture answers use the fictional traveler's strength; collecting provisions restores it. Jesus does not have a rechargeable game-energy statistic. Completing the journey presents a results card with a Mercy Seal, Scripture score, remaining strength, provisions found, and a return-to-Sanctuary action.
+The road also includes four scarce bread and water caches placed on optional roadside detours. They remain nearly hidden until the traveler explores nearby, when a glimmer and clue reveal them. Walking and incorrect Scripture answers use the fictional traveler's strength; collecting provisions restores it. Jesus does not have a rechargeable game-energy statistic. The lived mercy response determines whether the Mercy Seal is earned.
+
+Current Journey 2 slice: a separate Mark 4:35–41 level places the selected traveler and Jesus aboard a first-century boat on the Sea of Galilee. The player secures three deck stations, bails water at three locations, crosses the deck to reach Jesus, answers three factual Scripture questions, and completes a reflection before earning a Faith Seal. Both levels are available from a responsive journey-selection screen, and completing either returns there.
 
 Approval checkpoint: review the provisional religious content and choice framing.
 

@@ -13,5 +13,8 @@ The following prototype assets were generated specifically for Walk With Jesus w
 - `generated/jesus-guide.png`: a respectful, first-century Jewish teacher depiction used only for the non-player Jesus guide. The generation brief requested olive-brown skin, dark wavy shoulder-length hair and beard, an off-white tunic, a deep red-brown mantle, no halo or cross, and a transparent background matching the traveler sprites.
 - `generated/collectible-bread.png`: an isolated rustic bread-loaf collectible in a warm painterly game style, generated with a transparent background.
 - `generated/collectible-water.png`: an isolated first-century-inspired earthenware water-flask collectible with a leather strap and restrained cyan water highlight, generated with a transparent background.
+- `generated/desperate-traveler.png`: a transparent fictional first-century traveler sprite used for Journey 1's clearly labeled fictional theft-and-mercy framing. The prompt requested a sympathetic, unarmed, weather-worn traveler rather than a threatening caricature.
+- `generated/sea-of-galilee-storm.png`: a wide painterly game environment depicting a historically inspired first-century fishing boat on the stormy Sea of Galilee, with an open deck for gameplay and no people or embedded text.
+- `generated/sea-of-galilee-calm.png`: an edited companion state of the same boat and composition after the storm, with still water and warm light providing a visible narrative payoff. It was created from the storm image with the built-in image-generation editor.
 
 All generated assets require art-direction, historical, cultural, and religious-content review before release. They contain no third-party game assets or direct Bible quotation.

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "id": "calming_storm",
+  "content_status": "provisional",
+  "title": "Jesus Calms the Storm",
+  "scripture_reference": "Mark 4:35–41",
+  "intro": {
+    "kicker": "JOURNEY 2 · MARK 4",
+    "title": "Cross the Sea with Jesus",
+    "body": "Evening falls as Jesus and His disciples cross the Sea of Galilee. Prepare the boat, respond when the storm rises, and remember what Scripture says happened on the water.",
+    "action_label": "Board the boat  →"
+  },
+  "questions": [
+    {
+      "kicker": "SCRIPTURE QUESTION · 1 OF 3",
+      "title": "The crossing begins",
+      "body": "Jesus and His disciples leave the crowd and set out in the boat.",
+      "prompt": "When does the crossing begin?",
+      "reference": "Mark 4:35–36",
+      "choices": [
+        {"label": "As evening draws on", "correct": true, "response": "The crossing begins as evening draws on."},
+        {"label": "At sunrise", "correct": false, "response": "Mark places the beginning of the crossing in the evening."}
+      ],
+      "action_label": "Face the rising storm  →"
+    },
+    {
+      "kicker": "SCRIPTURE QUESTION · 2 OF 3",
+      "title": "Waves fill the boat",
+      "body": "A violent squall rises and waves break over the boat while the disciples struggle against the water.",
+      "prompt": "Where is Jesus during the storm?",
+      "reference": "Mark 4:37–38",
+      "choices": [
+        {"label": "At the bow watching the waves", "correct": false, "response": "Jesus is in the stern, asleep on a cushion."},
+        {"label": "In the stern, asleep on a cushion", "correct": true, "response": "Jesus is asleep on a cushion in the stern."}
+      ],
+      "action_label": "Reach Jesus  →"
+    },
+    {
+      "kicker": "SCRIPTURE QUESTION · 3 OF 3",
+      "title": "Jesus rises",
+      "body": "The disciples wake Jesus. He rebukes the wind and addresses the sea.",
+      "prompt": "What happens after Jesus rebukes the storm?",
+      "reference": "Mark 4:39–41",
+      "choices": [
+        {"label": "The wind ceases and there is great calm", "correct": true, "response": "The wind ceases and the sea becomes calm. The disciples are filled with awe."},
+        {"label": "The boat immediately reaches shore", "correct": false, "response": "The wind ceases and there is great calm; the passage does not say the boat instantly reaches shore."}
+      ],
+      "action_label": "Reflect on the crossing  →"
+    }
+  ],
+  "reflection": {
+    "kicker": "JOURNEY REFLECTION",
+    "title": "From fear to awe",
+    "body": "The storm reveals both the disciples' fear and Jesus' authority over wind and sea. Faith does not pretend the danger is unreal; it remembers who is present in the boat.",
+    "reference": "Provisional summary inspired by Mark 4:35–41",
+    "action_label": "Complete Journey 2"
+  }
+}

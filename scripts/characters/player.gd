@@ -11,6 +11,8 @@ signal destination_reached
 @onready var sprite: Sprite2D = $Sprite2D
 
 var _walking_to_target := false
+var _walking_direct := false
+var _direct_target := Vector2.ZERO
 var _facing := Vector2.UP
 var _walk_phase := 0.0
 var _walk_amount := 0.0
@@ -29,6 +31,13 @@ func _ready() -> void:
 func move_to(target: Vector2) -> void:
 	navigation_agent.target_position = target
 	_walking_to_target = true
+	_walking_direct = false
+
+
+func move_direct_to(target: Vector2) -> void:
+	_direct_target = target
+	_walking_direct = true
+	_walking_to_target = false
 
 
 func set_character_texture(texture: Texture2D) -> void:
@@ -41,6 +50,7 @@ func set_character_texture(texture: Texture2D) -> void:
 
 func stop() -> void:
 	_walking_to_target = false
+	_walking_direct = false
 	velocity = Vector2.ZERO
 	if is_node_ready():
 		navigation_agent.target_position = global_position
@@ -50,7 +60,14 @@ func _physics_process(_delta: float) -> void:
 	var keyboard_direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	if keyboard_direction.length_squared() > 0.01:
 		_walking_to_target = false
+		_walking_direct = false
 		velocity = keyboard_direction.normalized() * movement_speed
+	elif _walking_direct:
+		if global_position.distance_to(_direct_target) <= 10.0:
+			stop()
+			destination_reached.emit()
+		else:
+			velocity = global_position.direction_to(_direct_target) * movement_speed
 	elif _walking_to_target:
 		if navigation_agent.is_navigation_finished():
 			stop()

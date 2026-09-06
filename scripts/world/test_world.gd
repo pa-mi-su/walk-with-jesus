@@ -1,6 +1,7 @@
 extends Node2D
 
 signal return_to_title_requested
+signal journey_selection_requested
 
 const JOURNEY_CONTENT_PATH := "res://content/journeys/good_samaritan.json"
 const INTERACTION_DISTANCE := 135.0
@@ -28,6 +29,7 @@ const COLLECTIBLE_LAYOUT := [
 @onready var journey_hint: Label = %JourneyHint
 @onready var destination_marker: Node2D = $WorldContent/DestinationMarker
 @onready var story_overlay: StoryOverlay = $StoryOverlay
+@onready var desperate_traveler: Node2D = %DesperateTraveler
 @onready var provisions_label: Label = %ProvisionsLabel
 @onready var strength_bar: ProgressBar = %StrengthBar
 @onready var pickup_toast: Label = %PickupToast
@@ -40,6 +42,7 @@ var _provisions := {"bread": 0, "water": 0}
 var _traveler_strength := MAX_TRAVELER_STRENGTH
 var _last_answer_correct := false
 var _correct_answer_count := 0
+var _mercy_shown := false
 var _pickup_tween: Tween
 
 
@@ -90,6 +93,7 @@ func begin_session() -> void:
 	_reset_journey_resources()
 	_spawn_collectibles()
 	destination_marker.visible = false
+	desperate_traveler.visible = false
 	_journey_phase = "intro"
 	story_overlay.show_intro(_journey_data.get("intro", {}))
 	queue_redraw()
@@ -146,8 +150,7 @@ func _on_destination_reached() -> void:
 func start_journey() -> void:
 	if _journey_phase != "intro":
 		return
-	story_overlay.close()
-	_lead_to_next_stop()
+	_trigger_opening_event()
 
 
 func get_journey_phase() -> String:
@@ -192,6 +195,10 @@ func continue_story() -> void:
 func _on_story_primary_pressed() -> void:
 	if _journey_phase == "intro":
 		start_journey()
+	elif _journey_phase == "opening_event":
+		story_overlay.close()
+		_flee_from_opening_event()
+		_lead_to_next_stop()
 	elif _journey_phase == "story_response":
 		story_overlay.close()
 		_lead_to_next_stop()
@@ -205,10 +212,11 @@ func _on_story_primary_pressed() -> void:
 			4,
 			roundi(_traveler_strength),
 			get_provision_count("bread"),
-			get_provision_count("water")
+			get_provision_count("water"),
+			_mercy_shown
 		)
 	elif _journey_phase == "complete":
-		return_to_title_requested.emit()
+		journey_selection_requested.emit()
 
 
 func _on_story_choice_selected(index: int) -> void:
@@ -218,16 +226,25 @@ func _on_story_choice_selected(index: int) -> void:
 	if index < 0 or index >= choices.size():
 		return
 	var choice: Dictionary = choices[index]
-	_last_answer_correct = bool(choice.get("correct", false))
-	if _last_answer_correct:
-		_correct_answer_count += 1
+	var feedback_heading := ""
+	if str(_current_stop.get("interaction_type", "scripture_quiz")) == "mercy_choice":
+		_mercy_shown = bool(choice.get("mercy", false))
+		_last_answer_correct = _mercy_shown
+		feedback_heading = "MERCY IN ACTION" if _mercy_shown else "MERCY OPPORTUNITY MISSED"
+		if _mercy_shown:
+			_consume_shared_provision()
 	else:
-		_set_traveler_strength(_traveler_strength - INCORRECT_ANSWER_PENALTY)
+		_last_answer_correct = bool(choice.get("correct", false))
+		if _last_answer_correct:
+			_correct_answer_count += 1
+		else:
+			_set_traveler_strength(_traveler_strength - INCORRECT_ANSWER_PENALTY)
 	_journey_phase = "story_response"
 	story_overlay.show_choice_response(
 		str(choice.get("response", "")),
 		str(_current_stop.get("action_label", "Continue with Jesus  →")),
-		_last_answer_correct
+		_last_answer_correct,
+		feedback_heading
 	)
 
 
@@ -246,6 +263,10 @@ func _on_guide_stop_reached(route_index: int) -> void:
 		push_error("Journey content has no stop for route index %d" % route_index)
 		return
 	_journey_phase = "catch_up"
+	if str(_current_stop.get("interaction_type", "")) == "mercy_choice":
+		desperate_traveler.position = jesus_guide.position + Vector2(-82.0, 40.0)
+		desperate_traveler.rotation = -0.08
+		desperate_traveler.visible = true
 	jesus_guide.set_guidance_cue("CATCH UP\n↓")
 	instruction_label.text = "Catch up to Jesus"
 	_update_follow_distance("Jesus has stopped ahead")
@@ -292,13 +313,40 @@ func _load_journey_content() -> void:
 
 
 func _reset_journey_resources() -> void:
-	_provisions = {"bread": 0, "water": 0}
+	_provisions = {"bread": 1, "water": 0}
 	_traveler_strength = MAX_TRAVELER_STRENGTH
 	_last_answer_correct = false
 	_correct_answer_count = 0
+	_mercy_shown = false
 	player.set_strength_ratio(1.0)
 	pickup_toast.text = ""
 	pickup_toast.modulate.a = 0.0
+	_update_resource_hud()
+
+
+func _trigger_opening_event() -> void:
+	_journey_phase = "opening_event"
+	desperate_traveler.position = player.position + Vector2(-105.0, -18.0)
+	desperate_traveler.rotation = 0.0
+	desperate_traveler.modulate.a = 1.0
+	desperate_traveler.visible = true
+	_provisions["bread"] = maxi(0, get_provision_count("bread") - 1)
+	_update_resource_hud()
+	story_overlay.show_narrative_event(_journey_data.get("opening_event", {}))
+
+
+func _flee_from_opening_event() -> void:
+	var flee_tween := create_tween().set_parallel(true)
+	flee_tween.tween_property(desperate_traveler, "position", desperate_traveler.position + Vector2(-170.0, -120.0), 0.8)
+	flee_tween.tween_property(desperate_traveler, "modulate:a", 0.0, 0.8)
+	flee_tween.chain().tween_callback(func() -> void: desperate_traveler.visible = false)
+
+
+func _consume_shared_provision() -> void:
+	if get_provision_count("bread") > 0:
+		_provisions["bread"] = get_provision_count("bread") - 1
+	elif get_provision_count("water") > 0:
+		_provisions["water"] = get_provision_count("water") - 1
 	_update_resource_hud()
 
 

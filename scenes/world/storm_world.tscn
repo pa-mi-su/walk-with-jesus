@@ -1,0 +1,239 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/storm_world.gd" id="1_world"]
+[ext_resource type="Texture2D" path="res://assets/generated/sea-of-galilee-storm.png" id="2_background"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="3_player"]
+[ext_resource type="Texture2D" path="res://assets/generated/jesus-guide.png" id="4_jesus"]
+[ext_resource type="Script" path="res://scripts/world/destination_marker.gd" id="5_marker"]
+[ext_resource type="PackedScene" path="res://scenes/ui/story_overlay.tscn" id="6_overlay"]
+
+[sub_resource type="SystemFont" id="SystemFont_brand"]
+font_names = PackedStringArray("Avenir Next", "SF Pro Display", "Segoe UI", "Arial")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar"]
+bg_color = Color(0.025, 0.09, 0.14, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.72, 0.82, 0.54)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+content_margin_left = 17.0
+content_margin_top = 9.0
+content_margin_right = 17.0
+content_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.035, 0.15, 0.21, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.65, 0.85, 0.9, 0.62)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_strength_bg"]
+bg_color = Color(0.01, 0.045, 0.075, 0.96)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_strength_fill"]
+bg_color = Color(0.3, 0.76, 0.84, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="StormWorld" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("2_background")
+
+[node name="WorldContent" type="Node2D" parent="."]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="WorldContent"]
+
+[node name="Player" parent="WorldContent" instance=ExtResource("3_player")]
+position = Vector2(920, 500)
+movement_bounds = Rect2(200, 275, 900, 300)
+sprite_base_scale = 0.075
+
+[node name="Jesus" type="Node2D" parent="WorldContent"]
+position = Vector2(310, 375)
+z_index = 9
+
+[node name="Sprite2D" type="Sprite2D" parent="WorldContent/Jesus"]
+position = Vector2(0, -88)
+rotation = 0.08
+texture = ExtResource("4_jesus")
+scale = Vector2(0.075, 0.075)
+
+[node name="NameLabel" type="Label" parent="WorldContent/Jesus"]
+unique_name_in_owner = true
+offset_left = -100.0
+offset_top = 12.0
+offset_right = 100.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(1, 0.86, 0.43, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.05, 0.08, 0.95)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = SubResource("SystemFont_brand")
+theme_override_font_sizes/font_size = 14
+text = "JESUS"
+horizontal_alignment = 1
+
+[node name="JesusStateLabel" type="Label" parent="WorldContent/Jesus"]
+unique_name_in_owner = true
+offset_left = -120.0
+offset_top = 38.0
+offset_right = 120.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.79, 0.9, 0.94, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.05, 0.08, 0.95)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = SubResource("SystemFont_brand")
+theme_override_font_sizes/font_size = 11
+text = "JESUS · RESTING IN THE STERN"
+horizontal_alignment = 1
+
+[node name="DestinationMarker" type="Node2D" parent="WorldContent"]
+z_index = 6
+script = ExtResource("5_marker")
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="SafeMargin" type="MarginContainer" parent="Interface"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = -24.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_brand")
+
+[node name="Layout" type="VBoxContainer" parent="Interface/SafeMargin"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_constants/separation = 9
+
+[node name="TopBar" type="HBoxContainer" parent="Interface/SafeMargin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="Interface/SafeMargin/Layout/TopBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button")
+text = "‹  Sanctuary"
+
+[node name="InstructionPanel" type="PanelContainer" parent="Interface/SafeMargin/Layout/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="InstructionLabel" type="Label" parent="Interface/SafeMargin/Layout/TopBar/InstructionPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "Journey 2 · The Sea of Galilee"
+horizontal_alignment = 1
+
+[node name="Chapter" type="PanelContainer" parent="Interface/SafeMargin/Layout/TopBar"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="Label" type="Label" parent="Interface/SafeMargin/Layout/TopBar/Chapter"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.38, 1)
+theme_override_font_sizes/font_size = 14
+text = "MARK 4"
+
+[node name="StatusRow" type="HBoxContainer" parent="Interface/SafeMargin/Layout"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Toast" type="Label" parent="Interface/SafeMargin/Layout/StatusRow"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.82, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.05, 0.08, 0.95)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+
+[node name="TaskPanel" type="PanelContainer" parent="Interface/SafeMargin/Layout/StatusRow"]
+custom_minimum_size = Vector2(210, 42)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="TaskLabel" type="Label" parent="Interface/SafeMargin/Layout/StatusRow/TaskPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.95, 0.97, 1)
+theme_override_font_sizes/font_size = 13
+text = "PREPARE TO CROSS"
+horizontal_alignment = 1
+
+[node name="StrengthPanel" type="PanelContainer" parent="Interface/SafeMargin/Layout/StatusRow"]
+custom_minimum_size = Vector2(270, 42)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="StrengthContent" type="HBoxContainer" parent="Interface/SafeMargin/Layout/StatusRow/StrengthPanel"]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="Label" type="Label" parent="Interface/SafeMargin/Layout/StatusRow/StrengthPanel/StrengthContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.88, 0.92, 1)
+theme_override_font_sizes/font_size = 12
+text = "YOUR STRENGTH"
+
+[node name="StrengthBar" type="ProgressBar" parent="Interface/SafeMargin/Layout/StatusRow/StrengthPanel/StrengthContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 16)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_strength_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_strength_fill")
+value = 100.0
+show_percentage = false
+
+[node name="Spacer" type="Control" parent="Interface/SafeMargin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="HintCenter" type="CenterContainer" parent="Interface/SafeMargin/Layout"]
+layout_mode = 2
+
+[node name="Hint" type="PanelContainer" parent="Interface/SafeMargin/Layout/HintCenter"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bar")
+
+[node name="HintLabel" type="Label" parent="Interface/SafeMargin/Layout/HintCenter/Hint"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.95, 0.97, 1)
+theme_override_font_sizes/font_size = 14
+text = "Tap the marked places to help on deck"
+
+[node name="StoryOverlay" parent="." instance=ExtResource("6_overlay")]

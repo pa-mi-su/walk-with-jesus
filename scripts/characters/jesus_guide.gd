@@ -11,6 +11,7 @@ signal stop_reached(route_index: int)
 	Vector2(705.0, 535.0),
 	Vector2(500.0, 360.0),
 	Vector2(300.0, 175.0),
+	Vector2(215.0, 110.0),
 ])
 @export var follower_trigger_distance := 120.0
 @export var walking_speed := 92.0

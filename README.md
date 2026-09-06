@@ -1,12 +1,12 @@
 # Walk With Jesus
 
-Walk With Jesus is a planned peaceful Catholic educational game and companion experience to [Sanctuary](https://mydailysanctuary.com). Each level is a self-contained journey with Jesus centered on a moment from His earthly life and ministry—such as a teaching, encounter, miracle, or sacred event. The first playable journey explores Jesus' teaching of the Parable of the Good Samaritan through Scripture questions, immediate answer feedback, and a final reflection.
+Walk With Jesus is a planned peaceful Catholic educational game and companion experience to [Sanctuary](https://mydailysanctuary.com). Each level is a self-contained journey with Jesus centered on a moment from His earthly life and ministry—such as a teaching, encounter, miracle, or sacred event. The prototype now contains two selectable levels: the Good Samaritan journey from Luke 10:25–37 and Jesus calming the storm from Mark 4:35–41.
 
 The project will use Godot 4.7.2 and GDScript, with one offline-first codebase targeting desktop, iPhone, iPad, and Android.
 
 ## Project status
 
-Milestone 1 development. The project currently includes a responsive title screen, four-character traveler selection, and a guided, scrolling 2D isometric journey. Jesus leads the chosen traveler to five story stops: four factual questions drawn from Luke 10:25–37 and a final journey reflection. Correct answers preserve Journey Strength; incorrect answers explain the Scriptural event and deduct 15 strength. Scarce bread and water caches are hidden on optional roadside detours and reveal themselves with a glimmer only when the traveler explores nearby. Completing the road awards a Mercy Seal and presents the Scripture score, remaining strength, provisions found, and a clear return to Sanctuary. Both characters have procedural walking cycles rather than sliding as static cutouts. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+Milestone 2 development. A responsive journey-selection screen leads into either level after the player chooses one of four fictional travelers. Journey 1 follows Jesus along the Jericho road, includes scarce hidden provisions, factual Scripture questions, an early bread theft, and a later encounter where the same desperate traveler needs mercy. Journey 2 takes place aboard a first-century boat during a storm: the player secures the deck, bails water, crosses the boat to reach Jesus, and answers questions about Mark 4:35–41. Each journey ends with its own seal and results card. The approved implementation sequence is documented in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
 
 No production Sanctuary services, credentials, accounts, analytics, advertising, or purchases are connected.
 
@@ -21,7 +21,7 @@ godot --editor --path .
 godot --path .
 ```
 
-On the title screen, choose **Begin the Journey**, select one of the four fictional travelers, and continue. Click or tap the road to follow Jesus; desktop arrow keys are also supported.
+On the title screen, choose **Choose a journey**, select Journey 1 or Journey 2, then choose one of the four fictional travelers. Click or tap the environment to move; desktop arrow keys are also supported.
 
 Run the automated checks with:
 

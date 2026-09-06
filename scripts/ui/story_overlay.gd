@@ -38,6 +38,18 @@ func show_intro(intro: Dictionary) -> void:
 	_show_and_focus(primary_button)
 
 
+func show_narrative_event(event: Dictionary) -> void:
+	_set_common(event)
+	prompt_label.visible = false
+	choices.visible = false
+	response_label.visible = false
+	reference_label.text = str(event.get("reference", ""))
+	reference_label.visible = not reference_label.text.is_empty()
+	primary_button.text = str(event.get("action_label", "Continue  →"))
+	primary_button.visible = true
+	_show_and_focus(primary_button)
+
+
 func show_story_stop(stop: Dictionary) -> void:
 	_set_common(stop)
 	prompt_label.text = str(stop.get("prompt", "What will you do?"))
@@ -55,14 +67,17 @@ func show_story_stop(stop: Dictionary) -> void:
 	_show_and_focus(choice_one)
 
 
-func show_choice_response(response: String, action_label: String, is_correct: bool) -> void:
+func show_choice_response(response: String, action_label: String, is_correct: bool, feedback_heading: String = "") -> void:
 	choices.visible = false
 	prompt_label.visible = false
 	response_label.add_theme_color_override(
 		"font_color",
 		Color("c8efd6") if is_correct else Color("ffb0a3")
 	)
-	response_label.text = "%s\n%s" % ["CORRECT" if is_correct else "NOT QUITE · JOURNEY STRENGTH -15", response]
+	var heading := feedback_heading
+	if heading.is_empty():
+		heading = "CORRECT" if is_correct else "NOT QUITE · JOURNEY STRENGTH -15"
+	response_label.text = "%s\n%s" % [heading, response]
 	response_label.visible = true
 	primary_button.text = action_label
 	primary_button.visible = true
@@ -81,9 +96,11 @@ func show_completion(stop: Dictionary) -> void:
 	_show_and_focus(primary_button)
 
 
-func show_journey_result(correct_answers: int, total_questions: int, strength: int, bread: int, water: int) -> void:
+func show_journey_result(correct_answers: int, total_questions: int, strength: int, bread: int, water: int, mercy_shown: bool = true) -> void:
+	var result_kicker := "JOURNEY 1 COMPLETE · MERCY SEAL EARNED" if mercy_shown else "JOURNEY 1 COMPLETE · MERCY TO PRACTICE"
+	var result_message := "You recognized your neighbor and allowed mercy to become action." if mercy_shown else "You learned the story. The road still offers another chance to practice its mercy."
 	_set_common({
-		"kicker": "JOURNEY 1 COMPLETE · MERCY SEAL EARNED",
+		"kicker": result_kicker,
 		"title": "You completed the road",
 		"body": "SCRIPTURE ANSWERS  %d OF %d\nJOURNEY STRENGTH  %d\nPROVISIONS FOUND  %d BREAD · %d WATER" % [correct_answers, total_questions, strength, bread, water],
 	})
@@ -91,11 +108,25 @@ func show_journey_result(correct_answers: int, total_questions: int, strength: i
 	choices.visible = false
 	response_label.remove_theme_color_override("font_color")
 	response_label.add_theme_color_override("font_color", Color("c8efd6"))
-	response_label.text = "Mercy is remembered not only by knowing the story, but by living it."
+	response_label.text = result_message
 	response_label.visible = true
 	reference_label.text = "Journey 1 · Luke 10:25–37"
 	reference_label.visible = true
-	primary_button.text = "Return to Sanctuary  →"
+	primary_button.text = "Choose the Next Journey  →"
+	primary_button.visible = true
+	_show_and_focus(primary_button)
+
+
+func show_level_result(result: Dictionary) -> void:
+	_set_common(result)
+	prompt_label.visible = false
+	choices.visible = false
+	response_label.add_theme_color_override("font_color", Color("c8efd6"))
+	response_label.text = str(result.get("message", "Journey complete."))
+	response_label.visible = true
+	reference_label.text = str(result.get("reference", ""))
+	reference_label.visible = not reference_label.text.is_empty()
+	primary_button.text = str(result.get("action_label", "Return to Sanctuary  →"))
 	primary_button.visible = true
 	_show_and_focus(primary_button)
 

@@ -10,7 +10,7 @@ This repository targets Godot 4.7.2 stable with GDScript and a single project ex
 
 ## Current phase
 
-Milestone 1 is complete. Milestone 2 is in progress with a provisional, externally stored Good Samaritan journey containing guided route legs, four factual Scripture questions, answer feedback, and a final reflection. All religious copy remains pending review and must stay replaceable without code changes.
+Milestone 1 is complete. Milestone 2 now includes two provisional, externally stored Gospel journeys. Journey 1 combines guided travel, four factual Scripture questions, hidden provisions, and a fictional theft-and-mercy arc inspired by the Good Samaritan teaching. Journey 2 covers Jesus calming the storm with deck preparation, water-bailing tasks, three Scripture questions, and a Faith Seal result. All religious copy remains pending review and must stay replaceable without code changes.
 
 The canonical local checkout is `/Users/pms/repos/walk-with-jesus` and its `origin` is the public `pa-mi-su/walk-with-jesus` GitHub repository. Do not change repository ownership or visibility, overwrite the remote, or publish credentials or generated output.
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/test_world.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2_player"]
@@ -6,8 +6,12 @@
 [ext_resource type="Script" path="res://scripts/world/destination_marker.gd" id="4_marker"]
 [ext_resource type="PackedScene" path="res://scenes/characters/jesus_guide.tscn" id="5_guide"]
 [ext_resource type="PackedScene" path="res://scenes/ui/story_overlay.tscn" id="6_story_overlay"]
+[ext_resource type="Texture2D" path="res://assets/generated/desperate-traveler.png" id="7_desperate"]
 
 [sub_resource type="SystemFont" id="SystemFont_brand"]
+font_names = PackedStringArray("Avenir Next", "SF Pro Display", "Segoe UI", "Arial")
+
+[sub_resource type="SystemFont" id="SystemFont_character"]
 font_names = PackedStringArray("Avenir Next", "SF Pro Display", "Segoe UI", "Arial")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar"]
@@ -97,6 +101,29 @@ movement_bounds = Rect2(90, 70, 1510, 1125)
 
 [node name="JesusGuide" parent="WorldContent" instance=ExtResource("5_guide")]
 position = Vector2(1310, 1030)
+
+[node name="DesperateTraveler" type="Node2D" parent="WorldContent"]
+unique_name_in_owner = true
+visible = false
+z_index = 8
+
+[node name="Sprite2D" type="Sprite2D" parent="WorldContent/DesperateTraveler"]
+position = Vector2(0, -92)
+texture = ExtResource("7_desperate")
+scale = Vector2(0.12, 0.12)
+
+[node name="NameLabel" type="Label" parent="WorldContent/DesperateTraveler"]
+offset_left = -50.0
+offset_top = 8.0
+offset_right = 50.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(1, 0.84, 0.48, 1)
+theme_override_colors/font_outline_color = Color(0.03, 0.1, 0.13, 0.9)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = SubResource("SystemFont_character")
+theme_override_font_sizes/font_size = 14
+text = "TRAVELER"
+horizontal_alignment = 1
 
 [node name="DestinationMarker" type="Node2D" parent="WorldContent"]
 z_index = 5

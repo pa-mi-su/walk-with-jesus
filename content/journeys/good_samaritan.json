@@ -10,6 +10,13 @@
     "body": "Follow Jesus along the road and listen to His teaching about the Good Samaritan. At each stop, answer a question about what happened in Scripture. A wrong answer costs 15 Journey Strength. Watch for faint glimmers along the roadside—hidden bread and water can restore it.",
     "action_label": "Follow Jesus  →"
   },
+  "opening_event": {
+    "kicker": "ON THE ROAD · FICTIONAL ENCOUNTER",
+    "title": "Your bread is taken",
+    "body": "A desperate traveler rushes past and takes the bread from your satchel. You see his worn clothing and frightened expression before he disappears along the road.",
+    "reference": "Fictional gameplay framing for the teaching in Luke 10:25–37",
+    "action_label": "Follow Jesus  →"
+  },
   "stops": [
     {
       "route_index": 1,
@@ -97,9 +104,31 @@
     },
     {
       "route_index": 5,
+      "interaction_type": "mercy_choice",
+      "kicker": "THE ROAD AHEAD · FICTIONAL ENCOUNTER",
+      "title": "The traveler beside the road",
+      "body": "You recognize the person who took your bread. He is now exhausted and hungry beside the road. What you learned is no longer only a question about the story.",
+      "prompt": "How will you respond?",
+      "reference": "Fictional gameplay application inspired by Luke 10:36–37",
+      "choices": [
+        {
+          "label": "Forgive him and stop to help",
+          "mercy": true,
+          "response": "You choose mercy over resentment. You stay, help him rise, and share a provision if you found one along the road."
+        },
+        {
+          "label": "Take back the satchel and leave",
+          "mercy": false,
+          "response": "You recover the satchel, but the traveler remains alone. The journey continues with an opportunity for mercy left unfinished."
+        }
+      ],
+      "action_label": "Walk with Jesus to reflect  →"
+    },
+    {
+      "route_index": 6,
       "kicker": "JOURNEY REFLECTION",
-      "title": "Go and live mercifully",
-      "body": "Jesus' teaching makes neighbor-love concrete: notice suffering, draw near, and let compassion become action. Carry that invitation into the choices you make beyond this road.",
+      "title": "Mercy becomes action",
+      "body": "Jesus' teaching makes neighbor-love concrete: notice suffering, draw near, and let compassion become action—even when the person before you has wronged you.",
       "reference": "Provisional summary inspired by Luke 10:36–37",
       "completion": true,
       "action_label": "Complete Journey 1"
